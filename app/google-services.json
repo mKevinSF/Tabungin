@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "521283853636",
+    "project_id": "tabungin-3a1f8",
+    "storage_bucket": "tabungin-3a1f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:521283853636:android:342404ad7bcb220ac48b11",
+        "android_client_info": {
+          "package_name": "com.example.imagetotextapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8XgVpw-cr_tQYzunssgSoOJbBlRj4MZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
