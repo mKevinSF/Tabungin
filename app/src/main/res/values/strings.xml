@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">IMAGE TO TEXT APP</string>
+    <string-array name="category_array">
+        <item>Makanan</item>
+        <item>Transportasi</item>
+        <item>Belanja</item>
+        <item>Lainnya</item>
+    </string-array>
+</resources>
