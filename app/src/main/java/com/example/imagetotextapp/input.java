@@ -1,3 +1,628 @@
+//package com.example.imagetotextapp;
+//
+//import android.Manifest;
+//import android.content.Intent;
+//import android.content.pm.PackageManager;
+//import android.os.Bundle;
+//import android.os.Environment;
+//import android.util.Log;
+//import android.view.View;
+//import android.widget.ArrayAdapter;
+//import android.widget.Button;
+//import android.widget.EditText;
+//import android.widget.ImageView;
+//import android.widget.Spinner;
+//import android.widget.Toast;
+//
+//import androidx.activity.EdgeToEdge;
+//import androidx.appcompat.app.AppCompatActivity;
+//import androidx.core.app.ActivityCompat;
+//import androidx.core.content.ContextCompat;
+//import androidx.recyclerview.widget.LinearLayoutManager;
+//import androidx.recyclerview.widget.RecyclerView;
+//
+//import com.google.firebase.firestore.DocumentReference;
+//import com.google.firebase.firestore.FirebaseFirestore;
+//
+//import java.io.File;
+//import java.io.FileWriter;
+//import java.io.IOException;
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//import android.nfc.Tag;
+//import android.os.Bundle;
+//import android.text.TextUtils;
+//import android.util.Log;
+//import android.view.View;
+//import android.content.Intent;
+//import android.widget.EditText;
+//import android.widget.TextView;
+//import android.widget.Toast;
+//import android.widget.Button;
+//
+//import androidx.annotation.NonNull;
+//import androidx.appcompat.app.AppCompatActivity;
+//import com.google.android.gms.tasks.OnCompleteListener;
+//import com.google.android.gms.tasks.OnSuccessListener;
+//import com.google.android.gms.tasks.Task;
+//import com.google.firebase.Firebase;
+//import com.google.firebase.auth.AuthResult;
+//import com.google.firebase.auth.FirebaseAuth;
+//import com.google.firebase.auth.FirebaseUser;
+//import com.google.firebase.firestore.DocumentReference;
+//import com.google.firebase.firestore.FirebaseFirestore;
+//
+//import org.w3c.dom.Text;
+//
+//import java.util.HashMap;
+//import java.util.Map;
+//
+//public class input extends AppCompatActivity {
+//    // Navigation Icons
+//    private ImageView profileIcon;
+//    private ImageView cameraIcon;
+//    private ImageView homeIcon;
+//
+//    private EditText etItemName, etPrice;
+//    private Spinner spinnerCategory;
+//    private Button btnSave;
+//    private RecyclerView recyclerViewExpenses;
+//    private ExpenseAdapter expenseAdapter;
+//    private List<Expense> expenseList;
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        FirebaseAuth mAuth;
+//        FirebaseFirestore db;
+//        TextView namabarang, hargabarang;
+//        Spinner jenisbarang;
+//        String userId;
+//
+//        mAuth = FirebaseAuth.getInstance();
+//        db = FirebaseFirestore.getInstance();
+//
+//        namabarang = findViewById(R.id.etItemName);
+//        hargabarang = findViewById(R.id.etPrice);
+//        jenisbarang = findViewById(R.id.spinnerCategory);
+//        btnSave = findViewById(R.id.btnSave);
+//
+//        String barang = etItemName.getText().toString();
+//        String harga = etPrice.getText().toString();
+//        String jenis = spinnerCategory.getSelectedItem().toString();
+//        userId = mAuth.getCurrentUser().getUid();
+//        DocumentReference documentReference = db.collection("Transactions").document(userId);
+//        Map<String, Object> barangData = new HashMap<>();
+//        barangData.put("itemName", barang);
+//        barangData.put("itemPrice", harga);
+//        barangData.put("itemCategory", jenis);
+//        barangData.put("itemInputBy", userId);
+//
+//
+//        super.onCreate(savedInstanceState);
+//        EdgeToEdge.enable(this); // Enable Edge-to-Edge
+//        setContentView(R.layout.activity_input);
+//
+//        // Initialize views
+//        etItemName = findViewById(R.id.etItemName);
+//        etPrice = findViewById(R.id.etPrice);
+//        spinnerCategory = findViewById(R.id.spinnerCategory);
+//        btnSave = findViewById(R.id.btnSave);
+//        recyclerViewExpenses = findViewById(R.id.recyclerViewExpenses);
+//
+//        // Navigation icons
+//        profileIcon = findViewById(R.id.profileIcon);
+//        cameraIcon = findViewById(R.id.cameraIcon);
+//        homeIcon = findViewById(R.id.homeIcon);
+//
+//        // Set up navigation icons
+//        setupNavigation();
+//
+//        // Fill spinner with categories from resources
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+//                R.array.category_array, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinnerCategory.setAdapter(adapter);
+//
+//        // Setup RecyclerView
+//        expenseList = new ArrayList<>();
+//        //data
+//        expenseAdapter = new ExpenseAdapter(expenseList);
+//        recyclerViewExpenses.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerViewExpenses.setAdapter(expenseAdapter);
+//
+//        // Request storage permission
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//        }
+//
+//        // Button click action
+//        btnSave.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String itemName = etItemName.getText().toString().trim();
+//                String priceText = etPrice.getText().toString().trim();
+//                String category = spinnerCategory.getSelectedItem().toString();
+//
+//                // Input validation
+//                if (itemName.isEmpty() || priceText.isEmpty()) {
+//                    Toast.makeText(input.this, "Nama Item dan Harga wajib diisi", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                // Parse price to double
+//                double price = Double.parseDouble(priceText);
+//
+//                // Create a new Expense object and update RecyclerView
+//                Expense newExpense = new Expense(itemName, price, category);
+//                expenseList.add(newExpense);
+//                expenseAdapter.notifyDataSetChanged();
+//
+//                // Save data to CSV
+//                saveToCSV(newExpense);
+//
+//                // Clear input fields after saving
+//                etItemName.setText("");
+//                etPrice.setText("");
+//                spinnerCategory.setSelection(0);
+//            }
+//        });
+//    }
+//    private void saveToCSV(Expense expense) {
+//        // Buat file CSV di penyimpanan eksternal
+//        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+//        File file = new File(directory, "WOI.txt");
+////change 1
+//        // Jika file tidak ada, buat file baru dan tambahkan header
+//        boolean fileCreated = false;
+//        if (!file.exists()) {
+//            try {
+//                file.createNewFile();
+//                FileWriter writer = new FileWriter(file);
+//                writer.append("Item Name,Price,Category\n"); // Header CSV
+//                writer.flush();
+//                writer.close();
+//                fileCreated = true;
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        // Tambahkan data expense ke file CSV
+//        try {
+//            FileWriter writer = new FileWriter(file, true); // true untuk append
+//            writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
+//            writer.flush();
+//            writer.close();
+//            Toast.makeText(this, "Data disimpan ke CSV", Toast.LENGTH_SHORT).show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    private void setupNavigation() {
+//        homeIcon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(input.this, homepage.class);
+//                startActivity(intent);
+//                finish();
+//            }
+//        });
+//
+//        profileIcon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(input.this, profilepage.class);
+//                startActivity(intent);
+//                finish();
+//            }
+//        });
+//    }
+//}
+//package com.example.imagetotextapp;
+//
+//import android.Manifest;
+//import android.content.Intent;
+//import android.content.pm.PackageManager;
+//import android.os.Bundle;
+//import android.os.Environment;
+//import android.util.Log;
+//import android.view.View;
+//import android.widget.ArrayAdapter;
+//import android.widget.Button;
+//import android.widget.EditText;
+//import android.widget.ImageView;
+//import android.widget.Spinner;
+//import android.widget.Toast;
+//
+//import androidx.activity.EdgeToEdge;
+//import androidx.appcompat.app.AppCompatActivity;
+//import androidx.core.app.ActivityCompat;
+//import androidx.core.content.ContextCompat;
+//import androidx.recyclerview.widget.LinearLayoutManager;
+//import androidx.recyclerview.widget.RecyclerView;
+//
+//import com.google.firebase.firestore.DocumentReference;
+//import com.google.firebase.firestore.FirebaseFirestore;
+//import com.google.firebase.auth.FirebaseAuth;
+//
+//import java.io.File;
+//import java.io.FileWriter;
+//import java.io.IOException;
+//import java.util.ArrayList;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map;
+//
+//public class input extends AppCompatActivity {
+//    // Navigation Icons
+//    private ImageView profileIcon;
+//    private ImageView cameraIcon;
+//    private ImageView homeIcon;
+//
+//    private EditText etItemName, etPrice;
+//    private Spinner spinnerCategory;
+//    private Button btnSave;
+//    private RecyclerView recyclerViewExpenses;
+//    private ExpenseAdapter expenseAdapter;
+//    private List<Expense> expenseList;
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        EdgeToEdge.enable(this); // Enable Edge-to-Edge
+//        setContentView(R.layout.activity_input);
+//
+//        // Firebase Initialization
+//        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//
+//        // Initialize views
+//        etItemName = findViewById(R.id.etItemName);
+//        etPrice = findViewById(R.id.etPrice);
+//        spinnerCategory = findViewById(R.id.spinnerCategory);
+//        btnSave = findViewById(R.id.btnSave);
+//        recyclerViewExpenses = findViewById(R.id.recyclerViewExpenses);
+//
+//        // Navigation icons
+//        profileIcon = findViewById(R.id.profileIcon);
+//        cameraIcon = findViewById(R.id.cameraIcon);
+//        homeIcon = findViewById(R.id.homeIcon);
+//
+//        // Set up navigation icons
+//        setupNavigation();
+//
+//        // Fill spinner with categories from resources
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+//                R.array.category_array, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinnerCategory.setAdapter(adapter);
+//
+//        // Setup RecyclerView
+//        expenseList = new ArrayList<>();
+//        expenseAdapter = new ExpenseAdapter(expenseList);
+//        recyclerViewExpenses.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerViewExpenses.setAdapter(expenseAdapter);
+//
+//        // Request storage permission
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//        }
+//
+//        // Button click action
+//        btnSave.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String itemName = etItemName.getText().toString().trim();
+//                String priceText = etPrice.getText().toString().trim();
+//                String category = spinnerCategory.getSelectedItem().toString();
+//
+//                // Input validation
+//                if (itemName.isEmpty() || priceText.isEmpty()) {
+//                    Toast.makeText(input.this, "Nama Item dan Harga wajib diisi", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                // Parse price to double
+//                double price = Double.parseDouble(priceText);
+//
+//                // Get user ID from Firebase Authentication
+//                String userId = mAuth.getCurrentUser().getUid();
+//
+//                // Create map for Firestore
+//                Map<String, Object> barangData = new HashMap<>();
+//                barangData.put("itemName", itemName);
+//                barangData.put("itemPrice", price);
+//                barangData.put("itemCategory", category);
+//                barangData.put("itemInputBy", userId);
+//
+//                // Save data to Firestore
+//                DocumentReference documentReference = db.collection("Transactions").document(userId);
+//                documentReference.set(barangData)
+//                        .addOnSuccessListener(aVoid -> {
+//                            // Data successfully saved to Firestore
+//                            Toast.makeText(input.this, "Data berhasil disimpan ke Firestore", Toast.LENGTH_SHORT).show();
+//                        })
+//                        .addOnFailureListener(e -> {
+//                            // Failed to save data
+//                            Toast.makeText(input.this, "Gagal menyimpan data ke Firestore", Toast.LENGTH_SHORT).show();
+//                        });
+//
+//                // Create a new Expense object and update RecyclerView
+//                Expense newExpense = new Expense(itemName, price, category);
+//                expenseList.add(newExpense);
+//                expenseAdapter.notifyDataSetChanged();
+//
+//                // Save data to CSV
+//                saveToCSV(newExpense);
+//
+//                // Clear input fields after saving
+//                etItemName.setText("");
+//                etPrice.setText("");
+//                spinnerCategory.setSelection(0);
+//            }
+//        });
+//    }
+//
+//    private void saveToCSV(Expense expense) {
+//        // Buat file CSV di penyimpanan eksternal
+//        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+//        File file = new File(directory, "WOI.txt");
+//
+//        // Jika file tidak ada, buat file baru dan tambahkan header
+//        boolean fileCreated = false;
+//        if (!file.exists()) {
+//            try {
+//                file.createNewFile();
+//                FileWriter writer = new FileWriter(file);
+//                writer.append("Item Name,Price,Category\n"); // Header CSV
+//                writer.flush();
+//                writer.close();
+//                fileCreated = true;
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        // Tambahkan data expense ke file CSV
+//        try {
+//            FileWriter writer = new FileWriter(file, true); // true untuk append
+//            writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
+//            writer.flush();
+//            writer.close();
+//            Toast.makeText(this, "Data disimpan ke CSV", Toast.LENGTH_SHORT).show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    private void setupNavigation() {
+//        homeIcon.setOnClickListener(v -> {
+//            Intent intent = new Intent(input.this, homepage.class);
+//            startActivity(intent);
+//            finish();
+//        });
+//
+//        profileIcon.setOnClickListener(v -> {
+//            Intent intent = new Intent(input.this, profilepage.class);
+//            startActivity(intent);
+//            finish();
+//        });
+//    }
+//}
+//package com.example.imagetotextapp;
+//
+//import android.Manifest;
+//import android.content.Intent;
+//import android.content.pm.PackageManager;
+//import android.os.Bundle;
+//import android.os.Environment;
+//import android.util.Log;
+//import android.view.View;
+//import android.widget.ArrayAdapter;
+//import android.widget.Button;
+//import android.widget.EditText;
+//import android.widget.ImageView;
+//import android.widget.Spinner;
+//import android.widget.Toast;
+//
+//import androidx.activity.EdgeToEdge;
+//import androidx.appcompat.app.AppCompatActivity;
+//import androidx.core.app.ActivityCompat;
+//import androidx.core.content.ContextCompat;
+//import androidx.recyclerview.widget.LinearLayoutManager;
+//import androidx.recyclerview.widget.RecyclerView;
+//
+//import com.google.firebase.firestore.DocumentReference;
+//import com.google.firebase.firestore.FirebaseFirestore;
+//import com.google.firebase.auth.FirebaseAuth;
+//import com.google.firebase.firestore.DocumentSnapshot;
+//import com.google.firebase.firestore.EventListener;
+//import com.google.firebase.firestore.FirebaseFirestoreException;
+//
+//import java.io.File;
+//import java.io.FileWriter;
+//import java.io.IOException;
+//import java.util.ArrayList;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map;
+//
+//public class input extends AppCompatActivity {
+//    // Navigation Icons
+//    private ImageView profileIcon;
+//    private ImageView cameraIcon;
+//    private ImageView homeIcon;
+//
+//    private EditText etItemName, etPrice;
+//    private Spinner spinnerCategory;
+//    private Button btnSave;
+//    private RecyclerView recyclerViewExpenses;
+//    private ExpenseAdapter expenseAdapter;
+//    private List<Expense> expenseList;
+//
+//    private FirebaseAuth mAuth;
+//    private FirebaseFirestore db;
+//    private String userId, userName;
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        EdgeToEdge.enable(this); // Enable Edge-to-Edge
+//        setContentView(R.layout.activity_input);
+//
+//        // Firebase Initialization
+//        mAuth = FirebaseAuth.getInstance();
+//        db = FirebaseFirestore.getInstance();
+//
+//        // Initialize views
+//        etItemName = findViewById(R.id.etItemName);
+//        etPrice = findViewById(R.id.etPrice);
+//        spinnerCategory = findViewById(R.id.spinnerCategory);
+//        btnSave = findViewById(R.id.btnSave);
+//        recyclerViewExpenses = findViewById(R.id.recyclerViewExpenses);
+//
+//        // Navigation icons
+//        profileIcon = findViewById(R.id.profileIcon);
+//        cameraIcon = findViewById(R.id.cameraIcon);
+//        homeIcon = findViewById(R.id.homeIcon);
+//
+//        // Set up navigation icons
+//        setupNavigation();
+//
+//        // Fill spinner with categories from resources
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+//                R.array.category_array, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinnerCategory.setAdapter(adapter);
+//
+//        // Setup RecyclerView
+//        expenseList = new ArrayList<>();
+//        expenseAdapter = new ExpenseAdapter(expenseList);
+//        recyclerViewExpenses.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerViewExpenses.setAdapter(expenseAdapter);
+//
+//        // Request storage permission
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//        }
+//
+//        // Get userId and userName from Firestore
+//        userId = mAuth.getCurrentUser().getUid();
+//        DocumentReference documentReference = db.collection("users").document(userId);
+//        documentReference.addSnapshotListener(this, (documentSnapshot, e) -> {
+//            if (e != null) {
+//                return;
+//            }
+//            if (documentSnapshot != null && documentSnapshot.exists()) {
+//                userName = documentSnapshot.getString("userName");
+//            }
+//        });
+//
+//        // Button click action
+//        btnSave.setOnClickListener(v -> {
+//            String itemName = etItemName.getText().toString().trim();
+//            String priceText = etPrice.getText().toString().trim();
+//            String category = spinnerCategory.getSelectedItem().toString();
+//
+//            // Input validation
+//            if (itemName.isEmpty() || priceText.isEmpty()) {
+//                Toast.makeText(input.this, "Nama Item dan Harga wajib diisi", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//
+//            // Parse price to double
+//            double price = Double.parseDouble(priceText);
+//
+//            // Create map for Firestore with username for itemInputBy
+//            Map<String, Object> barangData = new HashMap<>();
+//            barangData.put("itemName", itemName);
+//            barangData.put("itemPrice", price);
+//            barangData.put("itemCategory", category);
+//            barangData.put("itemInputBy", userName); // Use userName instead of userId
+//
+//            // Save data to Firestore
+//            db.collection("Transactions").add(barangData)
+//                    .addOnSuccessListener(documentReference -> {
+//                        // Data berhasil disimpan ke dokumen baru
+//                        Toast.makeText(input.this, "Data berhasil disimpan ke Firestore", Toast.LENGTH_SHORT).show();
+//                    })
+//                    .addOnFailureListener(e -> {
+//                        // Gagal menyimpan data
+//                        Toast.makeText(input.this, "Gagal menyimpan data ke Firestore", Toast.LENGTH_SHORT).show();
+//                    });
+//
+//            // Create a new Expense object and update RecyclerView
+//            Expense newExpense = new Expense(itemName, price, category);
+//            expenseList.add(newExpense);
+//            expenseAdapter.notifyDataSetChanged();
+//
+//            // Save data to CSV
+//            saveToCSV(newExpense);
+//
+//            // Clear input fields after saving
+//            etItemName.setText("");
+//            etPrice.setText("");
+//            spinnerCategory.setSelection(0);
+//        });
+//    }
+//
+//    private void saveToCSV(Expense expense) {
+//        // Buat file CSV di penyimpanan eksternal
+//        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+//        File file = new File(directory, "WOI.txt");
+//
+//        // Jika file tidak ada, buat file baru dan tambahkan header
+//        boolean fileCreated = false;
+//        if (!file.exists()) {
+//            try {
+//                file.createNewFile();
+//                FileWriter writer = new FileWriter(file);
+//                writer.append("Item Name,Price,Category\n"); // Header CSV
+//                writer.flush();
+//                writer.close();
+//                fileCreated = true;
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        // Tambahkan data expense ke file CSV
+//        try {
+//            FileWriter writer = new FileWriter(file, true); // true untuk append
+//            writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
+//            writer.flush();
+//            writer.close();
+//            Toast.makeText(this, "Data disimpan ke CSV", Toast.LENGTH_SHORT).show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    private void setupNavigation() {
+//        homeIcon.setOnClickListener(v -> {
+//            Intent intent = new Intent(input.this, homepage.class);
+//            startActivity(intent);
+//            finish();
+//        });
+//
+//        profileIcon.setOnClickListener(v -> {
+//            Intent intent = new Intent(input.this, profilepage.class);
+//            startActivity(intent);
+//            finish();
+//        });
+//    }
+//}
 package com.example.imagetotextapp;
 
 import android.Manifest;
@@ -21,11 +646,16 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class input extends AppCompatActivity {
     // Navigation Icons
@@ -40,28 +670,30 @@ public class input extends AppCompatActivity {
     private ExpenseAdapter expenseAdapter;
     private List<Expense> expenseList;
 
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this); // Enable Edge-to-Edge
         setContentView(R.layout.activity_input);
 
-        // Initialize views
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        // Initialize your views here
         etItemName = findViewById(R.id.etItemName);
         etPrice = findViewById(R.id.etPrice);
         spinnerCategory = findViewById(R.id.spinnerCategory);
         btnSave = findViewById(R.id.btnSave);
         recyclerViewExpenses = findViewById(R.id.recyclerViewExpenses);
 
-        // Navigation icons
+        // Initialize navigation icons
         profileIcon = findViewById(R.id.profileIcon);
         cameraIcon = findViewById(R.id.cameraIcon);
         homeIcon = findViewById(R.id.homeIcon);
 
-        // Set up navigation icons
-        setupNavigation();
-
-        // Fill spinner with categories from resources
+        // Set up spinner for categories
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.category_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -69,7 +701,6 @@ public class input extends AppCompatActivity {
 
         // Setup RecyclerView
         expenseList = new ArrayList<>();
-        //data
         expenseAdapter = new ExpenseAdapter(expenseList);
         recyclerViewExpenses.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewExpenses.setAdapter(expenseAdapter);
@@ -81,7 +712,7 @@ public class input extends AppCompatActivity {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
 
-        // Button click action
+        // Button click action to save data
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,12 +729,29 @@ public class input extends AppCompatActivity {
                 // Parse price to double
                 double price = Double.parseDouble(priceText);
 
-                // Create a new Expense object and update RecyclerView
+                // Create a new Expense object
                 Expense newExpense = new Expense(itemName, price, category);
-                expenseList.add(newExpense);
-                expenseAdapter.notifyDataSetChanged();
 
-                // Save data to CSV
+                // Save data to Firestore
+                String userId = mAuth.getCurrentUser().getUid();
+                Map<String, Object> barangData = new HashMap<>();
+                barangData.put("itemName", itemName);
+                barangData.put("itemPrice", price);
+                barangData.put("itemCategory", category);
+                barangData.put("itemInputBy", userId);  // Use userId as itemInputBy
+
+                // Add new document to Firestore (this prevents overwriting data)
+                db.collection("Transactions").add(barangData)
+                        .addOnSuccessListener(documentReference -> {
+                            // Success: Data is saved in Firestore
+                            Toast.makeText(input.this, "Data berhasil disimpan ke Firestore", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            // Failure: Something went wrong
+                            Toast.makeText(input.this, "Gagal menyimpan data ke Firestore", Toast.LENGTH_SHORT).show();
+                        });
+
+                // Optionally, save the same data to CSV
                 saveToCSV(newExpense);
 
                 // Clear input fields after saving
@@ -112,94 +760,10 @@ public class input extends AppCompatActivity {
                 spinnerCategory.setSelection(0);
             }
         });
+
+        // Navigation icons setup
+        setupNavigation();
     }
-    private void saveToCSV(Expense expense) {
-        // Buat file CSV di penyimpanan eksternal
-        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        File file = new File(directory, "WOI.txt");
-
-        // Jika file tidak ada, buat file baru dan tambahkan header
-        boolean fileCreated = false;
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-                FileWriter writer = new FileWriter(file);
-                writer.append("Item Name,Price,Category\n"); // Header CSV
-                writer.flush();
-                writer.close();
-                fileCreated = true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Tambahkan data expense ke file CSV
-        try {
-            FileWriter writer = new FileWriter(file, true); // true untuk append
-            writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
-            writer.flush();
-            writer.close();
-            Toast.makeText(this, "Data disimpan ke CSV", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-//    private void saveToCSV(Expense expense) {
-//        // Pastikan memiliki izin untuk menulis ke penyimpanan eksternal
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
-//            return; // Tunggu sampai izin diberikan
-//        }
-//
-//        // Menggunakan direktori publik
-//        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-//        if (!directory.exists()) {
-//            directory.mkdirs(); // Buat direktori jika tidak ada
-//        }
-//        File file = new File(directory, "test.txt");
-//
-//        try {
-//            FileWriter writer = new FileWriter(file, true); // true untuk menambah
-//            if (file.length() == 0) {
-//                writer.append("Item Name,Price,Category\n"); // Tambah header jika file baru
-//            }
-//            writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
-//            writer.flush();
-//            writer.close();
-//
-//            Toast.makeText(this, "Data disimpan ke CSV", Toast.LENGTH_SHORT).show();
-//            Log.d("FileLocation", "File disimpan di: " + file.getAbsolutePath());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Log.e("FileWriteError", "Error writing file: " + e.getMessage());
-//            Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
-//        }
-//    }
-//    private void saveToCSV(Expense expense) {
-//        File directory = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS); // gunakan getExternalFilesDir
-//        if (!directory.exists()) {
-//            directory.mkdirs(); // Buat direktori jika tidak ada
-//        }
-//        File file = new File(directory, "test.txt");
-//
-//        try {
-//            FileWriter writer = new FileWriter(file, true); // true untuk menambah
-//            if (!file.exists()) {
-//                writer.append("Item Name,Price,Category\n"); // Tambah header jika file baru
-//            }
-//            writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
-//            writer.flush();
-//            writer.close();
-//            Toast.makeText(this, "Data disimpan ke CSV", Toast.LENGTH_SHORT).show();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Log.e("FileWriteError", "Error writing file: " + e.getMessage());
-//            Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
-//        }
-//    }
-
 
     private void setupNavigation() {
         homeIcon.setOnClickListener(new View.OnClickListener() {
@@ -219,5 +783,38 @@ public class input extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void saveToCSV(Expense expense) {
+        // Save the expense data to a CSV file in external storage
+        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        File file = new File(directory, "WOI.txt");
+
+        // If the file doesn't exist, create it and add a header
+        boolean fileCreated = false;
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                FileWriter writer = new FileWriter(file);
+                writer.append("Item Name,Price,Category\n"); // CSV header
+                writer.flush();
+                writer.close();
+                fileCreated = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Append data to the file
+        try {
+            FileWriter writer = new FileWriter(file, true); // true to append
+            writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
+            writer.flush();
+            writer.close();
+            Toast.makeText(this, "Data disimpan !!", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
+        }
     }
 }
