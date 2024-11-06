@@ -624,7 +624,7 @@
 //    }
 //}
 package com.example.imagetotextapp;
-//ini hasil 6 november coy
+//ini hasil 6 november 2024 coy
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
