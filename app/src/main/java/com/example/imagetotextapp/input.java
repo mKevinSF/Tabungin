@@ -1,5 +1,5 @@
 package com.example.imagetotextapp;
-
+//ini hasil 6 november coy
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
