@@ -3,23 +3,10 @@ package com.example.imagetotextapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
-
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-
 public class homepage extends AppCompatActivity {
-    private Button homeIcon, profileIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +14,17 @@ public class homepage extends AppCompatActivity {
         setContentView(R.layout.activity_homepage);
 
         ImageView profileIcon = findViewById(R.id.profileIcon);
+        ImageView cameraIcon = findViewById(R.id.cameraIcon);
+        ImageView homeIcon = findViewById(R.id.homeIcon);
+
+        homeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(homepage.this, homepage.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         profileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,7 +34,14 @@ public class homepage extends AppCompatActivity {
                 finish();
             }
         });
+
+        cameraIcon.setOnClickListener(new View.OnClickListener() { // Add this block
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(homepage.this, input.class); // Change to your input activity name
+                startActivity(intent);
+                finish();
+            }
+        });
     }
-
-
 }
