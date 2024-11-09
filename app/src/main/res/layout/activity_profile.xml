@@ -4,164 +4,112 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".profilepage">
 
+    <!-- Date Text -->
     <TextView
         android:id="@+id/dateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="63dp"
         android:text="23 Mei 2024"
-        android:textSize="16sp"
+        android:textSize="18sp"
+        android:textColor="#000000"
         android:fontFamily="sans-serif-medium"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.1" />
 
-    <TextView
-        android:id="@+id/greetingText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginBottom="50dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="Hello,"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/profileImage"
+    <!-- Profile Image -->
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#A4FF87"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintTop_toBottomOf="@id/dateText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateText" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Username -->
     <TextView
         android:id="@+id/greetUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="50dp"
-        android:fontFamily="sans-serif-medium"
         android:text="UserName"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/profileImage"
-        app:layout_constraintStart_toEndOf="@+id/greetingText"
-        app:layout_constraintTop_toBottomOf="@+id/dateText" />
-
-    <ImageView
-        android:id="@+id/profileImage"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.287"
-        app:srcCompat="@mipmap/ic_launcher" />
-
-    <ImageView
-        android:id="@+id/userIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textStyle="bold"
+        android:textColor="#000000"
         app:layout_constraintTop_toBottomOf="@+id/profileImage"
-        app:layout_constraintVertical_bias="0.058"
-        app:srcCompat="@drawable/user_black" />
-
-    <TextView
-        android:id="@+id/userName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:text="Username"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/userIcon"
-        app:layout_constraintTop_toBottomOf="@+id/userNameHint" />
-
-    <ImageView
-        android:id="@+id/emailIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userName"
-        app:srcCompat="@drawable/email_black" />
-
-    <TextView
-        android:id="@+id/userNameHint"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
-        android:text="Username"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/userIcon"
-        app:layout_constraintTop_toTopOf="@+id/userIcon" />
+        android:layout_marginTop="16dp" />
 
-    <TextView
-        android:id="@+id/emailText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
-        android:text="Email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/emailIcon"
-        app:layout_constraintTop_toTopOf="@+id/emailIcon" />
-
-    <TextView
-        android:id="@+id/email"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:text="Your Email Address"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/emailIcon"
-        app:layout_constraintTop_toBottomOf="@+id/emailText" />
-
+    <!-- Change Profile Button -->
     <Button
         android:id="@+id/changeProfile"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:backgroundTint="#2cb296"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#2CB296"
         android:text="Change Profile"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@+id/greetUserName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailIcon"
-        app:layout_constraintVertical_bias="0.685" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/logout" />
 
+    <!-- Logout Button -->
     <Button
-        android:id="@+id/button"
+        android:id="@+id/logout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:backgroundTint="#2cb296"
-        android:onClick="logout"
-        android:text="Logout"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#2CB296"
+        android:text="Log Out"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@+id/changeProfile"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cameraIcon"
+        android:layout_marginBottom="1dp" />
+
+    <!-- Bottom Navigation Icons -->
+    <ImageView
+        android:id="@+id/homeIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/homeagreement"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.2" />
+
+    <ImageView
+        android:id="@+id/cameraIcon"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#A4FF87"
+        android:src="@drawable/camera"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/profileIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/profilecandidate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailIcon"
-        app:layout_constraintVertical_bias="0.697" />
+        app:layout_constraintHorizontal_bias="0.8" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

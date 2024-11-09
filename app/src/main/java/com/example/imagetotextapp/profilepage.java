@@ -3,6 +3,7 @@ package com.example.imagetotextapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 
@@ -21,10 +22,11 @@ import java.text.DateFormat;
 import java.util.Calendar;
 
 public class profilepage extends AppCompatActivity {
-    TextView userName, email, greeting;
+    TextView greeting;
     FirebaseAuth mAuth;
     FirebaseFirestore db;
-    Button logOutButton;
+    Button logOutButton, changeProfile;
+    ImageView profileImage;
     String userId;
     ListenerRegistration listenerRegistration;
 
@@ -32,9 +34,8 @@ public class profilepage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        userName = findViewById(R.id.userName);
-        email = findViewById(R.id.email);
         greeting = findViewById(R.id.greetUserName);
+        profileImage = findViewById(R.id.profileImage);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -52,11 +53,14 @@ public class profilepage extends AppCompatActivity {
                 if(e != null){
                     return;
                 }
-
-                userName.setText(documentSnapshot.getString("userName"));
-                email.setText(documentSnapshot.getString("email"));
-
                 greeting.setText(documentSnapshot.getString("userName"));
+            }
+        });
+
+        changeProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(),)
             }
         });
     }
