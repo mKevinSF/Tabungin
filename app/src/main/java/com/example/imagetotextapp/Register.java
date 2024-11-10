@@ -1,6 +1,5 @@
 package com.example.imagetotextapp;
 
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,14 +15,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,9 +49,9 @@ public class Register extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String userName = userNameEditText.getText().toString();
                 String email = emailEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
-                String userName = userNameEditText.getText().toString();
 
                 if(TextUtils.isEmpty(email)) {
                     emailEditText.setError("Email is required");
@@ -77,6 +73,14 @@ public class Register extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
+                                    FirebaseUser fUser = mAuth.getCurrentUser();
+                                    fUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Toast.makeText(Register.this, "Verification Email Has Been Sent", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
                                     Toast.makeText(Register.this, "Registration Successful", Toast.LENGTH_SHORT).show();
                                     userId = mAuth.getCurrentUser().getUid();
                                     DocumentReference documentReference = db.collection("users").document(userId);

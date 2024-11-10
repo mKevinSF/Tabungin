@@ -39,6 +39,7 @@ dependencies {
     implementation ("com.google.android.material:material:1.5.0")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.3")
     implementation(libs.activity)
+    implementation(libs.firebase.storage)
     testImplementation ("junit:junit:4.13.2")
     androidTestImplementation ("androidx.test.ext:junit:1.1.3")
     androidTestImplementation ("androidx.test.espresso:espresso-core:3.4.0")
@@ -50,6 +51,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth:23.0.0")
     implementation("com.google.firebase:firebase-firestore:25.1.0")
+    implementation("com.squareup.picasso:picasso:2.8");
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

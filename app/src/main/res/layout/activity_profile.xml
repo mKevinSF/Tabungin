@@ -8,32 +8,36 @@
     tools:context=".profilepage">
 
     <!-- Date Text -->
+
+    <!-- Profile Image -->
+
+    <!-- Username -->
+
     <TextView
         android:id="@+id/dateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="23 Mei 2024"
-        android:textSize="18sp"
-        android:textColor="#000000"
+        android:layout_marginTop="124dp"
         android:fontFamily="sans-serif-medium"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="23 Mei 2024"
+        android:textColor="#000000"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Profile Image -->
     <ImageView
         android:id="@+id/profileImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:backgroundTint="#A4FF87"
         android:src="@mipmap/ic_launcher"
-        app:layout_constraintTop_toBottomOf="@id/dateText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/dateText" />
 
-    <!-- Username -->
     <TextView
         android:id="@+id/greetUserName"
         android:layout_width="wrap_content"
@@ -46,6 +50,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
+
+    <!-- Username -->
+    <TextView
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@+id/greetUserName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp" />
 
     <!-- Change Profile Button -->
     <Button
@@ -64,23 +82,25 @@
         app:layout_constraintBottom_toTopOf="@+id/logout" />
 
     <!-- Logout Button -->
+
+    <!-- Bottom Navigation Icons -->
     <Button
         android:id="@+id/logout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="1dp"
         android:backgroundTint="#2CB296"
         android:text="Log Out"
         android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@+id/changeProfile"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/cameraIcon"
-        android:layout_marginBottom="1dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeProfile" />
 
-    <!-- Bottom Navigation Icons -->
     <ImageView
         android:id="@+id/homeIcon"
         android:layout_width="32dp"

@@ -1,7 +1,10 @@
 package com.example.imagetotextapp;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,6 +13,7 @@ import android.widget.Button;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -22,7 +26,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 
 public class profilepage extends AppCompatActivity {
-    TextView greeting;
+    TextView userName, email;
     FirebaseAuth mAuth;
     FirebaseFirestore db;
     Button logOutButton, changeProfile;
@@ -34,8 +38,11 @@ public class profilepage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        greeting = findViewById(R.id.greetUserName);
+        userName = findViewById(R.id.greetUserName);
+        email = findViewById(R.id.email);
         profileImage = findViewById(R.id.profileImage);
+        logOutButton = findViewById(R.id.logout);
+        changeProfile = findViewById(R.id.changeProfile);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -53,17 +60,23 @@ public class profilepage extends AppCompatActivity {
                 if(e != null){
                     return;
                 }
-                greeting.setText(documentSnapshot.getString("userName"));
+                userName.setText(documentSnapshot.getString("userName"));
+                email.setText(documentSnapshot.getString("email"));
             }
         });
 
         changeProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
-                Intent i = new Intent(v.getContext(),)
+                Intent i = new Intent(v.getContext(), editProfile.class);
+                i.putExtra("userName", userName.getText().toString());
+                i.putExtra("email", email.getText().toString());
+                startActivity(i);
             }
+//            Intent openGalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//            startActivityForResult(openGalleryIntent, 1000);
         });
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
