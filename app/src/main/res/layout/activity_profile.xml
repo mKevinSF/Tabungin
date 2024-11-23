@@ -113,8 +113,8 @@
 
     <ImageView
         android:id="@+id/cameraIcon"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="#A4FF87"
         android:src="@drawable/camera"

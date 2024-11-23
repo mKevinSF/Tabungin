@@ -130,49 +130,79 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:padding="16dp" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@android:color/darker_gray"
-        tools:layout_editor_absoluteY="651dp"
-        tools:ignore="MissingConstraints">
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/bottomNav"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="80dp"-->
+<!--        android:background="@android:color/darker_gray"-->
+<!--        tools:layout_editor_absoluteY="651dp"-->
+<!--        tools:ignore="MissingConstraints">-->
 
-        <!-- Home Icon (Left Smaller Icon) -->
-        <ImageView
-            android:id="@+id/homeIcon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_margin="10dp"
-            android:src="@drawable/homeagreement"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        &lt;!&ndash; Home Icon (Left Smaller Icon) &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/homeIcon"-->
+<!--            android:layout_width="32dp"-->
+<!--            android:layout_height="32dp"-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:src="@drawable/homeagreement"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
-        <!-- Camera Icon (Center Larger Icon) -->
-        <ImageView
-            android:id="@+id/cameraIcon"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_margin="10dp"
-            android:backgroundTint="@android:color/holo_green_light"
-            android:src="@drawable/camera"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/profileIcon"
-            app:layout_constraintStart_toEndOf="@id/homeIcon"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        &lt;!&ndash; Camera Icon (Center Larger Icon) &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/cameraIcon"-->
+<!--            android:layout_width="64dp"-->
+<!--            android:layout_height="64dp"-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:backgroundTint="@android:color/holo_green_light"-->
+<!--            android:src="@drawable/camera"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/profileIcon"-->
+<!--            app:layout_constraintStart_toEndOf="@id/homeIcon"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
-        <!-- Profile Icon (Right Smaller Icon) -->
-        <ImageView
-            android:id="@+id/profileIcon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_margin="10dp"
-            android:src="@drawable/profilecandidate"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        &lt;!&ndash; Profile Icon (Right Smaller Icon) &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/profileIcon"-->
+<!--            android:layout_width="32dp"-->
+<!--            android:layout_height="32dp"-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:src="@drawable/profilecandidate"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+    <ImageView
+        android:id="@+id/homeIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/homeagreement"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.2" />
+
+    <ImageView
+        android:id="@+id/cameraIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#A4FF87"
+        android:src="@drawable/camera"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/profileIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/profilecandidate"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.8" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
