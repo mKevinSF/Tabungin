@@ -784,11 +784,58 @@ public class input extends AppCompatActivity {
             }
         });
     }
+//    private void saveToCSV(Expense expense) {
+//        // Get the app's internal storage directory
+//        File directory = getFilesDir();  // Access the app's internal storage directory
+//        File file = new File(directory, "WOI.csv");
+//
+//        // Log the directory and file path
+//        Log.d("CSVFilePath", "File is being saved to: " + file.getAbsolutePath());
+//
+//        // If the file doesn't exist, create it and add a header
+//        boolean fileCreated = false;
+//        if (!file.exists()) {
+//            try {
+//                file.createNewFile();
+//                FileWriter writer = new FileWriter(file);
+//                writer.append("Item Name,Price,Category\n"); // CSV header
+//                writer.flush();
+//                writer.close();
+//                fileCreated = true;
+//
+//                // Log when the file is created
+//                Log.d("CSVFileCreation", "File created and header added.");
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                Log.e("CSVFileCreationError", "Error creating file or adding header: " + e.getMessage());
+//            }
+//        }
+//
+//        // Append data to the file
+//        try {
+//            FileWriter writer = new FileWriter(file, true); // true to append
+//            writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
+//            writer.flush();
+//            writer.close();
+//
+//            // Log when data is successfully appended
+//            Log.d("CSVFileAppend", "Data appended to file: " + expense.getItemName() + ", " + expense.getPrice() + ", " + expense.getCategory());
+//
+//            // Show success toast
+//            Toast.makeText(this, "Data disimpan !!", Toast.LENGTH_SHORT).show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Log.e("CSVFileAppendError", "Error appending data to file: " + e.getMessage());
+//
+//            // Show failure toast
+//            Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
     private void saveToCSV(Expense expense) {
         // Save the expense data to a CSV file in external storage
         File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        File file = new File(directory, "WOI.txt");
+        File file = new File(directory, "WOI.csv");
 
         // If the file doesn't exist, create it and add a header
         boolean fileCreated = false;
