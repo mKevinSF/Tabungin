@@ -581,8 +581,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -677,6 +679,11 @@ public class homepage extends AppCompatActivity {
     }
 
     private void uploadCSVToAPI(Uri fileUri) {
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+        View progressOverlay = findViewById(R.id.progressOverlay);
+        progressOverlay.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+
         OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(1200, TimeUnit.SECONDS)  // Waktu tunggu koneksi
             .writeTimeout(1200, TimeUnit.SECONDS)    // Waktu tunggu penulisan
@@ -689,6 +696,10 @@ public class homepage extends AppCompatActivity {
 
             if (inputStream == null) {
                 Log.e(TAG, "Failed to open file input stream.");
+                runOnUiThread(() -> {
+                    progressOverlay.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                });
                 return;
             }
 
@@ -696,6 +707,10 @@ public class homepage extends AppCompatActivity {
             String fileName = getFileName(fileUri);
             if (fileName == null) {
                 Log.e(TAG, "Failed to get file name.");
+                runOnUiThread(() -> {
+                    progressOverlay.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                });
                 return;
             }
 
@@ -726,10 +741,18 @@ public class homepage extends AppCompatActivity {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Log.e(TAG, "API call failed: " + e.getMessage());
+                    runOnUiThread(() -> {
+                        progressOverlay.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
+                    });
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
+                    runOnUiThread(() -> {
+                        progressOverlay.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
+                    });
                     if (response.isSuccessful()) {
                         String responseData = response.body().string();
                         Log.d(TAG, "API Response: " + responseData);
@@ -747,6 +770,10 @@ public class homepage extends AppCompatActivity {
 
         } catch (IOException e) {
             Log.e(TAG, "Error reading file: " + e.getMessage());
+            runOnUiThread(() -> {
+                progressOverlay.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+            });
         }
     }
 

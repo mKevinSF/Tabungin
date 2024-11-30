@@ -170,81 +170,170 @@
 
 
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".prediksi">
 
-    <!-- Header section with date -->
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <!-- Scrollable Content -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/navigation_layout">
 
-        <!-- Original Data Chart -->
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/original_data_chart"
-            android:layout_width="match_parent"
-            android:layout_height="300dp" />
-
-        <!-- Test Predictions Chart -->
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/test_predictions_chart"
-            android:layout_width="match_parent"
-            android:layout_height="300dp" />
-
-        <!-- Future Predictions Chart -->
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/future_predictions_chart"
-            android:layout_width="match_parent"
-            android:layout_height="300dp" />
-
-        <!-- Unexpected Expenses Table -->
-        <TableLayout
-            android:id="@+id/unexpected_expenses_table"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="1"
-            android:padding="8dp"
-            android:background="#EEEEEE" />
-    </LinearLayout>
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Original Data Chart with Title -->
+            <TextView
+                android:id="@+id/title_original_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Original Data"
+                android:textSize="18sp"
+                android:paddingBottom="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/original_data_chart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="30dp"
+                android:background="#F0F0F0"/>
+
+            <!-- Test Predictions Chart with Title -->
+            <TextView
+                android:id="@+id/title_test_predictions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Test Predictions"
+                android:textSize="18sp"
+                android:paddingBottom="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/test_predictions_chart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="30dp"
+                android:background="#F0F0F0" />
+
+            <!-- Future Predictions Chart with Title -->
+            <TextView
+                android:id="@+id/title_future_predictions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Future Predictions"
+                android:textSize="18sp"
+                android:paddingBottom="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/future_predictions_chart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="32dp"
+                android:background="#F0F0F0" />
+
+            <!-- Unexpected Expenses Table -->
+            <TextView
+                android:id="@+id/title_unexpected_expenses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unexpected Expenses"
+                android:textSize="18sp"
+                android:paddingBottom="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <TableLayout
+                android:id="@+id/unexpected_expenses_table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1"
+                android:padding="8dp"
+                android:divider="@android:color/darker_gray"
+                android:showDividers="middle"
+                android:background="#EEEEEE">
+
+
+                <!-- Header Row with Borders -->
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Month"
+                        android:textStyle="bold"
+                        android:padding="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Count"
+                        android:textStyle="bold"
+                        android:padding="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Unexpected Value"
+                        android:textStyle="bold"
+                        android:padding="8dp" />
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <!-- Layout for navigation icons -->
-    <ImageView
-        android:id="@+id/homeIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/homeagreement"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.2" />
+    <LinearLayout
+        android:id="@+id/navigation_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <ImageView
-        android:id="@+id/cameraIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="#A4FF87"
-        android:src="@drawable/camera"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <!-- Left Icon -->
+        <ImageView
+            android:id="@+id/homeIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/homeagreement"
+            android:layout_weight="1"
+            android:layout_gravity="start"
+            android:layout_marginStart="16dp"/>
 
-    <ImageView
-        android:id="@+id/profileIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/profilecandidate"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8" />
+        <!-- Center Icon -->
+        <ImageView
+            android:id="@+id/cameraIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/camera"
+            android:backgroundTint="#A4FF87"
+            android:layout_weight="1"
+            android:layout_gravity="center"/>
+
+        <!-- Right Icon -->
+        <ImageView
+            android:id="@+id/profileIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/profilecandidate"
+            android:layout_weight="1"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
 

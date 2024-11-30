@@ -242,7 +242,7 @@ import org.json.JSONObject;
 
 public class prediksi extends AppCompatActivity {
 
-//    @Override
+    //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_prediksi);
@@ -310,121 +310,153 @@ public class prediksi extends AppCompatActivity {
 //            }
 //        });
 //    }
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_prediksi);
 
-    LineChart originalDataChart = findViewById(R.id.original_data_chart);
-    LineChart testPredictionsChart = findViewById(R.id.test_predictions_chart);
-    LineChart futurePredictionsChart = findViewById(R.id.future_predictions_chart);
-    TableLayout unexpectedExpensesTable = findViewById(R.id.unexpected_expenses_table);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_prediksi);
 
-    // Get the API result from the intent
-    String apiResult = getIntent().getStringExtra("api_result");
+        LineChart originalDataChart = findViewById(R.id.original_data_chart);
+        LineChart testPredictionsChart = findViewById(R.id.test_predictions_chart);
+        LineChart futurePredictionsChart = findViewById(R.id.future_predictions_chart);
+        TableLayout unexpectedExpensesTable = findViewById(R.id.unexpected_expenses_table);
 
-    try {
-        JSONObject jsonObject = new JSONObject(apiResult);
-        JSONObject predictions = jsonObject.getJSONObject("predictions");
+        enableChartScrollAndZoom(originalDataChart);
+        enableChartScrollAndZoom(testPredictionsChart);
+        enableChartScrollAndZoom(futurePredictionsChart);
 
-        // Plot Original Data
-        if (predictions.has("original_data")) {
-            JSONArray originalDataArray = new JSONArray(predictions.getString("original_data"));
-            ArrayList<Entry> originalDataEntries = new ArrayList<>();
-            for (int i = 0; i < originalDataArray.length(); i++) {
-                JSONObject dataPoint = originalDataArray.getJSONObject(i);
-                String date = dataPoint.getString("Date"); // Format: "dd/MM/yyyy"
-                float amount = (float) dataPoint.getDouble("Amount");
-                originalDataEntries.add(new Entry(i, amount));
+        // Get the API result from the intent
+        String apiResult = getIntent().getStringExtra("api_result");
+
+        try {
+            JSONObject jsonObject = new JSONObject(apiResult);
+            JSONObject predictions = jsonObject.getJSONObject("predictions");
+
+            // Plot Original Data
+            if (predictions.has("original_data")) {
+                JSONArray originalDataArray = new JSONArray(predictions.getString("original_data"));
+                ArrayList<Entry> originalDataEntries = new ArrayList<>();
+                for (int i = 0; i < originalDataArray.length(); i++) {
+                    JSONObject dataPoint = originalDataArray.getJSONObject(i);
+                    String date = dataPoint.getString("Date"); // Format: "dd/MM/yyyy"
+                    float amount = (float) dataPoint.getDouble("Amount");
+                    originalDataEntries.add(new Entry(i, amount));
+                }
+                plotData(originalDataChart, originalDataEntries, "Original Data");
             }
-            plotData(originalDataChart, originalDataEntries, "Original Data");
+
+            // Plot Test Predictions
+            if (predictions.has("test_predictions")) {
+                JSONArray testPredictionsArray = predictions.getJSONArray("test_predictions");
+                ArrayList<Entry> testPredictionsEntries = new ArrayList<>();
+                for (int i = 0; i < testPredictionsArray.length(); i++) {
+                    float prediction = (float) testPredictionsArray.getDouble(i);
+                    testPredictionsEntries.add(new Entry(i, prediction));
+                }
+                plotData(testPredictionsChart, testPredictionsEntries, "Test Predictions");
+            }
+
+            // Plot Future Predictions
+            if (predictions.has("future_predictions")) {
+                JSONArray futurePredictionsArray = predictions.getJSONArray("future_predictions");
+                ArrayList<Entry> futurePredictionsEntries = new ArrayList<>();
+                for (int i = 0; i < futurePredictionsArray.length(); i++) {
+                    float prediction = (float) futurePredictionsArray.getDouble(i);
+                    futurePredictionsEntries.add(new Entry(i, prediction));
+                }
+                plotData(futurePredictionsChart, futurePredictionsEntries, "Future Predictions");
+            }
+
+            // Populate Unexpected Expenses Table
+            if (predictions.has("unexpected_expenses")) {
+                JSONArray unexpectedExpensesArray = predictions.getJSONArray("unexpected_expenses");
+                for (int i = 0; i < unexpectedExpensesArray.length(); i++) {
+                    JSONObject expense = unexpectedExpensesArray.getJSONObject(i);
+                    String month = expense.getString("Month");
+                    int count = expense.getInt("Count");
+                    JSONArray amountsArray = expense.getJSONArray("Amounts");
+
+                    // Create a new row for each item in the JSON array
+                    TableRow row = new TableRow(this);
+                    row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+                    // Month Column
+                    TextView monthText = new TextView(this);
+                    monthText.setText(month);
+                    monthText.setPadding(10, 10, 10, 10); // Optional padding for readability
+                    row.addView(monthText);
+
+                    // Count Column
+                    TextView countText = new TextView(this);
+                    countText.setText(String.valueOf(count));
+                    countText.setPadding(30, 10, 10, 10);
+                    row.addView(countText);
+
+                    // Calculate the Total Unexpected Value
+                    double totalAmount = 0;
+                    for (int j = 0; j < amountsArray.length(); j++) {
+                        totalAmount += amountsArray.getDouble(j);
+                    }
+
+                    // Total Unexpected Value Column
+                    TextView totalText = new TextView(this);
+                    totalText.setText(String.format("%.2f", totalAmount)); // Format to show two decimal places
+                    totalText.setPadding(10, 10, 10, 10);
+                    row.addView(totalText);
+
+                    // Add the row to the table layout
+                    unexpectedExpensesTable.addView(row);
+                }
+            }
+        } catch (Exception e) {
+            Log.e("JSONParsingError", "Error: " + e.getMessage());
         }
 
-        // Plot Test Predictions
-        if (predictions.has("test_predictions")) {
-            JSONArray testPredictionsArray = predictions.getJSONArray("test_predictions");
-            ArrayList<Entry> testPredictionsEntries = new ArrayList<>();
-            for (int i = 0; i < testPredictionsArray.length(); i++) {
-                float prediction = (float) testPredictionsArray.getDouble(i);
-                testPredictionsEntries.add(new Entry(i, prediction));
+        // Set up zoom and scroll for the charts
+        enableChartScrollAndZoom(originalDataChart);
+        enableChartScrollAndZoom(testPredictionsChart);
+        enableChartScrollAndZoom(futurePredictionsChart);
+
+        // Set up navigation buttons
+        ImageView homeIcon = findViewById(R.id.homeIcon);
+        ImageView profileIcon = findViewById(R.id.profileIcon);
+        ImageView cameraIcon = findViewById(R.id.cameraIcon);
+
+        homeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(prediksi.this, homepage.class);
+                startActivity(intent);
+                finish();
             }
-            plotData(testPredictionsChart, testPredictionsEntries, "Test Predictions");
-        }
+        });
 
-        // Plot Future Predictions
-        if (predictions.has("future_predictions")) {
-            JSONArray futurePredictionsArray = predictions.getJSONArray("future_predictions");
-            ArrayList<Entry> futurePredictionsEntries = new ArrayList<>();
-            for (int i = 0; i < futurePredictionsArray.length(); i++) {
-                float prediction = (float) futurePredictionsArray.getDouble(i);
-                futurePredictionsEntries.add(new Entry(i, prediction));
+        profileIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(prediksi.this, profilepage.class);
+                startActivity(intent);
+                finish();
             }
-            plotData(futurePredictionsChart, futurePredictionsEntries, "Future Predictions");
-        }
+        });
 
-        // Populate Unexpected Expenses Table
-        if (predictions.has("unexpected_expenses")) {
-            JSONArray unexpectedExpensesArray = predictions.getJSONArray("unexpected_expenses");
-            for (int i = 0; i < unexpectedExpensesArray.length(); i++) {
-                JSONObject expense = unexpectedExpensesArray.getJSONObject(i);
-                String month = expense.getString("Month");
-                int count = expense.getInt("Count");
-                JSONArray amountsArray = expense.getJSONArray("Amounts");
-
-                TableRow row = new TableRow(this);
-                row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-
-                TextView monthText = new TextView(this);
-                monthText.setText(month);
-                row.addView(monthText);
-
-                TextView countText = new TextView(this);
-                countText.setText(String.valueOf(count));
-                row.addView(countText);
-
-                TextView amountsText = new TextView(this);
-                amountsText.setText(amountsArray.toString());
-                row.addView(amountsText);
-
-                unexpectedExpensesTable.addView(row);
+        cameraIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(prediksi.this, input.class);
+                startActivity(intent);
+                finish();
             }
-        }
-    } catch (Exception e) {
-        Log.e("JSONParsingError", "Error: " + e.getMessage());
+        });
     }
 
-    // Set up navigation buttons
-    ImageView homeIcon = findViewById(R.id.homeIcon);
-    ImageView profileIcon = findViewById(R.id.profileIcon);
-    ImageView cameraIcon = findViewById(R.id.cameraIcon);
+    // Method to enable scroll and zoom on the chart
+    private void enableChartScrollAndZoom(LineChart chart) {
+        chart.setDragEnabled(true);  // Enable dragging
+        chart.setScaleEnabled(true); // Enable scaling (zoom)
+        chart.setPinchZoom(true);    // Enable pinch zoom
+    }
 
-    homeIcon.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(prediksi.this, homepage.class);
-            startActivity(intent);
-            finish();
-        }
-    });
-
-    profileIcon.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(prediksi.this, profilepage.class);
-            startActivity(intent);
-            finish();
-        }
-    });
-
-    cameraIcon.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(prediksi.this, input.class);
-            startActivity(intent);
-            finish();
-        }
-    });
-}
     private void plotData(LineChart chart, ArrayList<Entry> entries, String label) {
         LineDataSet dataSet = new LineDataSet(entries, label);
         dataSet.setLineWidth(2f);
@@ -440,5 +472,5 @@ protected void onCreate(Bundle savedInstanceState) {
         chart.setDescription(description);
         chart.invalidate(); // Refresh chart
     }
-
 }
+
