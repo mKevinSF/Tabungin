@@ -606,6 +606,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 public class homepage extends AppCompatActivity {
@@ -621,6 +623,11 @@ public class homepage extends AppCompatActivity {
         ImageView cameraIcon = findViewById(R.id.cameraIcon);
         ImageView homeIcon = findViewById(R.id.homeIcon);
         Button prediksibutton = findViewById(R.id.prediksiButton);
+
+        Calendar calendar = Calendar.getInstance();
+        String currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
+        TextView dateText = findViewById(R.id.dateText);
+        dateText.setText(currentDate);
 
         homeIcon.setOnClickListener(v -> {
             Intent intent = new Intent(homepage.this, homepage.class);

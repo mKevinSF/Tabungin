@@ -640,6 +640,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -677,6 +678,22 @@ public class input extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input);
+
+        Button btnInfo = findViewById(R.id.btnInfo);
+        btnInfo.setOnClickListener(v -> {
+            Log.d("INFO_BUTTON", "Button clicked");
+            try {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Informasi");
+                builder.setMessage("Seluruh transaksi anda akan kami simpan pada file bernama transaksimu dengan format file csv yang ada pada folder Documents di folder aplikasi kami.");
+                builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                Log.d("INFO_BUTTON", "Dialog displayed");
+            } catch (Exception e) {
+                Log.e("INFO_BUTTON", "Error: " + e.getMessage());
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -787,7 +804,7 @@ public class input extends AppCompatActivity {
 //    private void saveToCSV(Expense expense) {
 //        // Get the app's internal storage directory
 //        File directory = getFilesDir();  // Access the app's internal storage directory
-//        File file = new File(directory, "WOI.csv");
+//        File file = new File(directory, "transaksimu.csv");
 //
 //        // Log the directory and file path
 //        Log.d("CSVFilePath", "File is being saved to: " + file.getAbsolutePath());
@@ -832,28 +849,57 @@ public class input extends AppCompatActivity {
 //        }
 //    }
 
-    private void saveToCSV(Expense expense) {
-        // Save the expense data to a CSV file in external storage
-        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        File file = new File(directory, "WOI.csv");
+//    private void saveToCSV(Expense expense) {
+//        // Save the expense data to a CSV file in external storage
+//        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+//        File file = new File(directory, "transaksimu.csv");
+//
+//        // If the file doesn't exist, create it and add a header
+//        boolean fileCreated = false;
+//        if (!file.exists()) {
+//            try {
+//                file.createNewFile();
+//                FileWriter writer = new FileWriter(file);
+//                writer.append("Item Name,Price,Category\n"); // CSV header
+//                writer.flush();
+//                writer.close();
+//                fileCreated = true;
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        // Append data to the file
+//        try {
+//            FileWriter writer = new FileWriter(file, true); // true to append
+//            writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
+//            writer.flush();
+//            writer.close();
+//            Toast.makeText(this, "Data disimpan !!", Toast.LENGTH_SHORT).show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+private void saveToCSV(Expense expense) {
+    // Get the app's external storage directory (app-specific)
+    File directory = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+    if (directory != null) {
+        Log.d("FilePath", "Saving to: " + directory.getAbsolutePath());
 
-        // If the file doesn't exist, create it and add a header
-        boolean fileCreated = false;
-        if (!file.exists()) {
-            try {
+        File file = new File(directory, "transaksimu.csv");
+
+        try {
+            // If file doesn't exist, create it and write header
+            if (!file.exists()) {
                 file.createNewFile();
                 FileWriter writer = new FileWriter(file);
                 writer.append("Item Name,Price,Category\n"); // CSV header
                 writer.flush();
                 writer.close();
-                fileCreated = true;
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-        }
 
-        // Append data to the file
-        try {
+            // Append data to the file
             FileWriter writer = new FileWriter(file, true); // true to append
             writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
             writer.flush();
@@ -864,4 +910,7 @@ public class input extends AppCompatActivity {
             Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
         }
     }
+}
+
+
 }
