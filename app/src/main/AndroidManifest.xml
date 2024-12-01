@@ -17,6 +17,9 @@
         android:theme="@style/Theme.IMAGETOTEXTAPP"
         tools:targetApi="31">
         <activity
+            android:name=".ManageMoneyy"
+            android:exported="false" />
+        <activity
             android:name=".prediksi"
             android:exported="false" />
         <activity
@@ -61,6 +64,5 @@
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="ocr" />
     </application>
-
 
 </manifest>

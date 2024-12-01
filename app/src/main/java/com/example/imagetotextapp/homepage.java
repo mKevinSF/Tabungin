@@ -623,6 +623,8 @@ public class homepage extends AppCompatActivity {
         ImageView cameraIcon = findViewById(R.id.cameraIcon);
         ImageView homeIcon = findViewById(R.id.homeIcon);
         Button prediksibutton = findViewById(R.id.prediksiButton);
+        Button manageButton = findViewById(R.id.manageButton);
+
 
         Calendar calendar = Calendar.getInstance();
         String currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
@@ -643,6 +645,12 @@ public class homepage extends AppCompatActivity {
 
         cameraIcon.setOnClickListener(v -> {
             Intent intent = new Intent(homepage.this, input.class);
+            startActivity(intent);
+            finish();
+        });
+
+        manageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(homepage.this, ManageMoneyy.class);
             startActivity(intent);
             finish();
         });
