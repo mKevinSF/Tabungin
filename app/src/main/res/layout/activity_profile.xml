@@ -42,94 +42,98 @@
         android:id="@+id/greetUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="UserName"
+        android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="#000000"
-        app:layout_constraintTop_toBottomOf="@+id/profileImage"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileImage" />
 
     <!-- Username -->
     <TextView
         android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Email"
+        android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="#000000"
-        app:layout_constraintTop_toBottomOf="@+id/greetUserName"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="10dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/greetUserName" />
 
     <!-- Change Profile Button -->
-    <Button
-        android:id="@+id/changeProfile"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#2CB296"
-        android:text="Change Profile"
-        android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@+id/greetUserName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/logout" />
 
     <!-- Logout Button -->
 
     <!-- Bottom Navigation Icons -->
     <Button
-        android:id="@+id/logout"
+        android:id="@+id/changeProfile"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="1dp"
         android:backgroundTint="#2CB296"
-        android:text="Log Out"
+        android:text="Change Profile"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/cameraIcon"
+        app:layout_constraintBottom_toTopOf="@+id/logout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/changeProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/greetUserName" />
 
-    <ImageView
-        android:id="@+id/homeIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/homeagreement"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.2" />
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="363dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#2CB296"
+        android:text="Log Out"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="24dp"
+        tools:layout_editor_absoluteY="488dp" />
 
-    <ImageView
-        android:id="@+id/cameraIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="#A4FF87"
-        android:src="@drawable/camera"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    <LinearLayout
+        android:id="@+id/navigation_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <ImageView
-        android:id="@+id/profileIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/profilecandidate"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8" />
+        <!-- Left Icon -->
+        <ImageView
+            android:id="@+id/homeIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:src="@drawable/homeagreement" />
+
+        <!-- Center Icon -->
+        <ImageView
+            android:id="@+id/cameraIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:backgroundTint="#A4FF87"
+            android:src="@drawable/camera" />
+
+        <!-- Right Icon -->
+        <ImageView
+            android:id="@+id/profileIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:src="@drawable/profilecandidate" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

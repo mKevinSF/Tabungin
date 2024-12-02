@@ -626,10 +626,14 @@
 package com.example.imagetotextapp;
 //ini hasil 6 november 2024 coy
 import android.Manifest;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -650,9 +654,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -685,7 +692,8 @@ public class input extends AppCompatActivity {
             try {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Informasi");
-                builder.setMessage("Seluruh transaksi anda akan kami simpan pada file bernama transaksimu dengan format file csv yang ada pada folder Documents di folder aplikasi kami.");
+                builder.setMessage("Seluruh transaksi anda akan kami simpan pada file bernama TR4NSAKSIMU dengan format file csv " +
+                        "yang ada pada folder Documents di folder aplikasi kami.");
                 builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
                 AlertDialog dialog = builder.create();
                 dialog.show();
@@ -881,36 +889,65 @@ public class input extends AppCompatActivity {
 //            Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
 //        }
 //    }
-private void saveToCSV(Expense expense) {
-    // Get the app's external storage directory (app-specific)
-    File directory = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-    if (directory != null) {
-        Log.d("FilePath", "Saving to: " + directory.getAbsolutePath());
 
-        File file = new File(directory, "transaksimu.csv");
 
-        try {
-            // If file doesn't exist, create it and write header
-            if (!file.exists()) {
-                file.createNewFile();
-                FileWriter writer = new FileWriter(file);
-                writer.append("Item Name,Price,Category\n"); // CSV header
-                writer.flush();
-                writer.close();
+//private void saveToCSV(Expense expense) {
+//    // Get the app's external storage directory (app-specific)
+//    File directory = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+//    if (directory != null) {
+//        Log.d("FilePath", "Saving to: " + directory.getAbsolutePath());
+//
+//        File file = new File(directory, "transaksimu.csv");
+//
+//        try {
+//            // If file doesn't exist, create it and write header
+//            if (!file.exists()) {
+//                file.createNewFile();
+//                FileWriter writer = new FileWriter(file);
+//                writer.append("Item Name,Price,Category\n"); // CSV header
+//                writer.flush();
+//                writer.close();
+//            }
+//
+//            // Append data to the file
+//            FileWriter writer = new FileWriter(file, true); // true to append
+//            writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
+//            writer.flush();
+//            writer.close();
+//            Toast.makeText(this, "Data disimpan !!", Toast.LENGTH_SHORT).show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//}
+
+
+    private void saveToCSV(Expense expense) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, "TR4NSAKSIMU.csv");
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "text/csv");
+        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS); // Save to "Documents"
+
+        // Get the content resolver
+        ContentResolver resolver = getContentResolver();
+        Uri uri = resolver.insert(MediaStore.Files.getContentUri("external"), values);
+
+        if (uri != null) {
+            try (OutputStream outputStream = resolver.openOutputStream(uri)) {
+                if (outputStream != null) {
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+                    writer.append("Item Name,Price,Category\n"); // CSV header
+                    writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
+                    writer.flush();
+                    writer.close();
+                    Toast.makeText(this, "Data disimpan !!", Toast.LENGTH_SHORT).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
             }
-
-            // Append data to the file
-            FileWriter writer = new FileWriter(file, true); // true to append
-            writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
-            writer.flush();
-            writer.close();
-            Toast.makeText(this, "Data disimpan !!", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
         }
     }
-}
-
 
 }

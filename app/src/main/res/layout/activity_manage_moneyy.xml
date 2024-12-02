@@ -1,139 +1,282 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/mainScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context=".ManageMoneyy">
 
-    <!-- Title -->
-    <TextView
-        android:id="@+id/titleManageMoney"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Kelola Pemasukan"
-        android:textSize="32sp"
-        android:textColor="#2cb296"
-        android:fontFamily="sans-serif-medium"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="100dp"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <!-- Pemasukan Input -->
-    <EditText
-        android:id="@+id/etIncome"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Masukkan jumlah pemasukan"
-        android:inputType="numberDecimal"
-        android:padding="10dp"
-        app:layout_constraintTop_toBottomOf="@id/titleManageMoney"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
+        <TextView
+            android:id="@+id/titleManageMoney"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Kelola Pemasukan"
+            android:textColor="#2cb296"
+            android:textSize="32sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Auto Allocate Button -->
-    <Button
-        android:id="@+id/btnAutoAllocate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Auto Allocate"
-        android:textColor="#fff"
-        android:backgroundTint="#2cb296"
-        app:layout_constraintTop_toBottomOf="@id/etIncome"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        <EditText
+            android:id="@+id/etIncome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="40dp"
+            android:hint="Masukkan jumlah pemasukan"
+            android:inputType="numberDecimal"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleManageMoney" />
 
-    <!-- Add Category Button -->
-    <Button
-        android:id="@+id/btnAddCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tambah Kolom"
-        android:textColor="#fff"
-        android:backgroundTint="#2cb296"
-        app:layout_constraintTop_toBottomOf="@id/btnAutoAllocate"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        <Button
+            android:id="@+id/btnAutoAllocate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#2cb296"
+            android:text="Auto Allocate"
+            android:textColor="#fff"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etIncome" />
 
-    <!-- Remove Category Button -->
-    <Button
-        android:id="@+id/btnRemoveCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hapus Kolom"
-        android:textColor="#fff"
-        android:backgroundTint="#e74c3c"
-        app:layout_constraintTop_toBottomOf="@id/btnAddCategory"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        <ScrollView
+            android:id="@+id/categoryScrollView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnAutoAllocate">
 
-    <!-- Dynamic Category Input Fields (Editable) -->
-    <LinearLayout
-        android:id="@+id/categoryContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/btnRemoveCategory"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp">
+            <LinearLayout
+                android:id="@+id/categoryContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
 
-        <!-- Initial Dynamic Fields will be added programmatically -->
-    </LinearLayout>
+        <!--        <EditText-->
+        <!--            android:id="@+id/resultTextView"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="32dp"-->
+        <!--            android:layout_marginTop="24dp"-->
+        <!--            android:layout_marginEnd="32dp"-->
+        <!--            android:hint="Hasil Alokasi"-->
+        <!--            android:inputType="textMultiLine"-->
+        <!--            android:padding="10dp"-->
+        <!--            android:scrollbars="vertical"-->
+        <!--            android:textColor="#333333"-->
+        <!--            android:textSize="18sp"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintHorizontal_bias="0.0"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/btnAddCategory" />-->
 
-    <!-- Save Button -->
-    <Button
-        android:id="@+id/btnSave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Simpan"
-        android:textColor="#fff"
-        android:backgroundTint="#2cb296"
-        app:layout_constraintTop_toBottomOf="@id/categoryContainer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        <Button
+            android:id="@+id/btnAddCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="183dp"
+            android:backgroundTint="#2cb296"
+            android:text="Tambah Kategori"
+            android:textColor="#fff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/categoryScrollView"
+            app:layout_constraintVertical_bias="0.0" />
 
-    <!-- Navigation Icons -->
-    <ImageView
-        android:id="@+id/homeIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/homeagreement"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.2" />
+        <LinearLayout
+            android:id="@+id/navigation_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-    <ImageView
-        android:id="@+id/cameraIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="#A4FF87"
-        android:src="@drawable/camera"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <ImageView
+                android:id="@+id/homeIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="start"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:src="@drawable/homeagreement" />
 
-    <ImageView
-        android:id="@+id/profileIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/profilecandidate"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8" />
+            <ImageView
+                android:id="@+id/cameraIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:backgroundTint="#A4FF87"
+                android:src="@drawable/camera" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:id="@+id/profileIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:src="@drawable/profilecandidate" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:id="@+id/main"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    tools:context=".ManageMoneyy">-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/titleManageMoney"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Kelola Pemasukan"-->
+<!--        android:textSize="32sp"-->
+<!--        android:textColor="#2cb296"-->
+<!--        android:fontFamily="sans-serif-medium"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:layout_marginTop="80dp" />-->
+
+<!--    <EditText-->
+<!--        android:id="@+id/etIncome"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="Masukkan jumlah pemasukan"-->
+<!--        android:inputType="numberDecimal"-->
+<!--        android:padding="10dp"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/titleManageMoney"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:layout_marginStart="40dp"-->
+<!--        android:layout_marginEnd="40dp" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/btnAutoAllocate"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Auto Allocate"-->
+<!--        android:textColor="#fff"-->
+<!--        android:backgroundTint="#2cb296"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/etIncome"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:layout_marginTop="24dp" />-->
+
+<!--    &lt;!&ndash; ScrollView untuk kategori &ndash;&gt;-->
+<!--    <ScrollView-->
+<!--        android:id="@+id/categoryScrollView"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/btnAutoAllocate"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:layout_marginStart="40dp"-->
+<!--        android:layout_marginEnd="40dp">-->
+
+<!--        &lt;!&ndash; LinearLayout untuk kategori yang dapat discroll &ndash;&gt;-->
+<!--        <LinearLayout-->
+<!--            android:id="@+id/categoryContainer"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical" />-->
+<!--    </ScrollView>-->
+
+<!--    <Button-->
+<!--        android:id="@+id/btnAddCategory"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Tambah Kategori"-->
+<!--        android:textColor="#fff"-->
+<!--        android:backgroundTint="#2cb296"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/categoryScrollView"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:layout_marginTop="24dp" />-->
+
+<!--    <EditText-->
+<!--        android:id="@+id/resultTextView"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="Hasil Alokasi"-->
+<!--        android:textSize="18sp"-->
+<!--        android:textColor="#333333"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:layout_marginStart="32dp"-->
+<!--        android:layout_marginEnd="32dp"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/btnAddCategory"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:padding="10dp"-->
+<!--        android:inputType="textMultiLine"-->
+<!--        android:scrollbars="vertical" />-->
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/navigation_layout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:padding="8dp"-->
+<!--        android:gravity="center_vertical"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent">-->
+
+<!--        &lt;!&ndash; Left Icon &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/homeIcon"-->
+<!--            android:layout_width="32dp"-->
+<!--            android:layout_height="32dp"-->
+<!--            android:src="@drawable/homeagreement"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_gravity="start"-->
+<!--            android:layout_marginStart="16dp"/>-->
+
+<!--        &lt;!&ndash; Center Icon &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/cameraIcon"-->
+<!--            android:layout_width="32dp"-->
+<!--            android:layout_height="32dp"-->
+<!--            android:src="@drawable/camera"-->
+<!--            android:backgroundTint="#A4FF87"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_gravity="center"/>-->
+
+<!--        &lt;!&ndash; Right Icon &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/profileIcon"-->
+<!--            android:layout_width="32dp"-->
+<!--            android:layout_height="32dp"-->
+<!--            android:src="@drawable/profilecandidate"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_gravity="end"-->
+<!--            android:layout_marginEnd="16dp"/>-->
+<!--    </LinearLayout>-->
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

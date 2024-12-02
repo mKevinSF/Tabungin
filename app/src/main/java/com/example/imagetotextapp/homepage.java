@@ -586,6 +586,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -731,6 +732,17 @@ public class homepage extends AppCompatActivity {
 
             // Baca isi file ke dalam string
             String fileContent = readInputStream(inputStream);
+            //mek 0212
+            // Hitung jumlah baris pada file CSV
+            int lineCount = countLines(fileContent);
+            if (lineCount < 100) {
+                runOnUiThread(() -> {
+                    progressOverlay.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(), "Datanya masih kurang biar prediksinya akurat. Input lebih banyak data yuk, minimal 100 data", Toast.LENGTH_SHORT).show();
+                });
+                return;
+            }
 
             // Siapkan RequestBody untuk file
             RequestBody fileRequestBody = RequestBody.create(
@@ -791,6 +803,122 @@ public class homepage extends AppCompatActivity {
             });
         }
     }
+
+    //count line nyoba
+//    private void uploadCSVToAPI(Uri fileUri) {
+//        ProgressBar progressBar = findViewById(R.id.progressBar);
+//        View progressOverlay = findViewById(R.id.progressOverlay);
+//        progressOverlay.setVisibility(View.VISIBLE);
+//        progressBar.setVisibility(View.VISIBLE);
+//
+//        OkHttpClient client = new OkHttpClient.Builder()
+//                .connectTimeout(1200, TimeUnit.SECONDS)  // Waktu tunggu koneksi
+//                .writeTimeout(1200, TimeUnit.SECONDS)    // Waktu tunggu penulisan
+//                .readTimeout(1200, TimeUnit.SECONDS)    // Waktu tunggu membaca respons
+//                .build();
+//
+//        try {
+//            // Gunakan ContentResolver untuk membuka InputStream
+//            InputStream inputStream = getContentResolver().openInputStream(fileUri);
+//
+//            if (inputStream == null) {
+//                Log.e(TAG, "Failed to open file input stream.");
+//                runOnUiThread(() -> {
+//                    progressOverlay.setVisibility(View.GONE);
+//                    progressBar.setVisibility(View.GONE);
+//                });
+//                return;
+//            }
+//
+//            // Dapatkan nama file dari URI
+//            String fileName = getFileName(fileUri);
+//            if (fileName == null) {
+//                Log.e(TAG, "Failed to get file name.");
+//                runOnUiThread(() -> {
+//                    progressOverlay.setVisibility(View.GONE);
+//                    progressBar.setVisibility(View.GONE);
+//                });
+//                return;
+//            }
+//
+//            // Baca isi file ke dalam string
+//            String fileContent = readInputStream(inputStream);
+//
+//            // Hitung jumlah baris pada file CSV
+//            int lineCount = countLines(fileContent);
+//            if (lineCount < 100) {
+//                runOnUiThread(() -> {
+//                    progressOverlay.setVisibility(View.GONE);
+//                    progressBar.setVisibility(View.GONE);
+//                    Toast.makeText(getApplicationContext(), "Input lebih banyak data (lebih dari 100 baris)", Toast.LENGTH_SHORT).show();
+//                });
+//                return;
+//            }
+//
+//            // Siapkan RequestBody untuk file
+//            RequestBody fileRequestBody = RequestBody.create(
+//                    MediaType.parse("text/csv"),
+//                    fileContent
+//            );
+//
+//            // Bangun MultipartBody
+//            MultipartBody requestBody = new MultipartBody.Builder()
+//                    .setType(MultipartBody.FORM)
+//                    .addFormDataPart("file", fileName, fileRequestBody)
+//                    .addFormDataPart("days", "7") // Tambahkan parameter days
+//                    .build();
+//
+//            // Bangun request API
+//            Request request = new Request.Builder()
+//                    .url("https://getpredict2-497063330583.asia-southeast2.run.app/predict") // Ganti dengan endpoint API Anda
+//                    .post(requestBody)
+//                    .build();
+//
+//            // Kirim request secara asynchronous
+//            client.newCall(request).enqueue(new Callback() {
+//                @Override
+//                public void onFailure(Call call, IOException e) {
+//                    Log.e(TAG, "API call failed: " + e.getMessage());
+//                    runOnUiThread(() -> {
+//                        progressOverlay.setVisibility(View.GONE);
+//                        progressBar.setVisibility(View.GONE);
+//                    });
+//                }
+//
+//                @Override
+//                public void onResponse(Call call, Response response) throws IOException {
+//                    runOnUiThread(() -> {
+//                        progressOverlay.setVisibility(View.GONE);
+//                        progressBar.setVisibility(View.GONE);
+//                    });
+//                    if (response.isSuccessful()) {
+//                        String responseData = response.body().string();
+//                        Log.d(TAG, "API Response: " + responseData);
+//
+//                        Intent intent = new Intent(homepage.this, prediksi.class);
+//                        intent.putExtra("api_result", responseData);
+//                        startActivity(intent);
+//                    } else {
+//                        Log.e(TAG, "API Error: " + response.code() + ", Message: " + response.message());
+//                    }
+//                }
+//            });
+//
+//        } catch (IOException e) {
+//            Log.e(TAG, "Error reading file: " + e.getMessage());
+//            runOnUiThread(() -> {
+//                progressOverlay.setVisibility(View.GONE);
+//                progressBar.setVisibility(View.GONE);
+//            });
+//        }
+//    }
+
+    // Fungsi untuk menghitung jumlah baris dalam file CSV
+    private int countLines(String fileContent) {
+        String[] lines = fileContent.split("\n");
+        return lines.length;
+    }
+
 
     // Helper method untuk membaca InputStream ke dalam String
     private String readInputStream(InputStream inputStream) throws IOException {
