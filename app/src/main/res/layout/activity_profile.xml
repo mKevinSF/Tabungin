@@ -84,7 +84,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/greetUserName" />
+        app:layout_constraintTop_toBottomOf="@+id/email"/>
 
     <Button
         android:id="@+id/logout"
@@ -93,8 +93,11 @@
         android:backgroundTint="#2CB296"
         android:text="Log Out"
         android:textColor="#FFFFFF"
+        android:layout_marginStart="24dp"
         tools:layout_editor_absoluteX="24dp"
-        tools:layout_editor_absoluteY="488dp" />
+        tools:layout_editor_absoluteY="488dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/changeProfile"/>
 
     <LinearLayout
         android:id="@+id/navigation_layout"
