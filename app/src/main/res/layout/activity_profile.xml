@@ -8,11 +8,6 @@
     tools:context=".profilepage">
 
     <!-- Date Text -->
-
-    <!-- Profile Image -->
-
-    <!-- Username -->
-
     <TextView
         android:id="@+id/dateText"
         android:layout_width="wrap_content"
@@ -26,6 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Profile Image -->
     <ImageView
         android:id="@+id/profileImage"
         android:layout_width="100dp"
@@ -34,10 +30,10 @@
         android:backgroundTint="#A4FF87"
         android:src="@mipmap/ic_launcher"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dateText" />
 
+    <!-- Username -->
     <TextView
         android:id="@+id/greetUserName"
         android:layout_width="wrap_content"
@@ -49,9 +45,9 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+        app:layout_constraintTop_toBottomOf="@id/profileImage" />
 
-    <!-- Username -->
+    <!-- Email -->
     <TextView
         android:id="@+id/email"
         android:layout_width="wrap_content"
@@ -63,13 +59,9 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/greetUserName" />
+        app:layout_constraintTop_toBottomOf="@id/greetUserName" />
 
     <!-- Change Profile Button -->
-
-    <!-- Logout Button -->
-
-    <!-- Bottom Navigation Icons -->
     <Button
         android:id="@+id/changeProfile"
         android:layout_width="0dp"
@@ -80,25 +72,26 @@
         android:backgroundTint="#2CB296"
         android:text="Change Profile"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/logout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email"/>
+        app:layout_constraintTop_toBottomOf="@id/email" />
 
+    <!-- Logout Button -->
     <Button
         android:id="@+id/logout"
-        android:layout_width="363dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
         android:backgroundTint="#2CB296"
         android:text="Log Out"
         android:textColor="#FFFFFF"
-        android:layout_marginStart="24dp"
-        tools:layout_editor_absoluteX="24dp"
-        tools:layout_editor_absoluteY="488dp"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintTop_toBottomOf="@+id/changeProfile"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/changeProfile" />
 
+    <!-- Bottom Navigation Icons -->
     <LinearLayout
         android:id="@+id/navigation_layout"
         android:layout_width="match_parent"
@@ -113,7 +106,6 @@
             android:id="@+id/homeIcon"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_gravity="start"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
             android:src="@drawable/homeagreement" />
@@ -123,7 +115,6 @@
             android:id="@+id/cameraIcon"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_gravity="center"
             android:layout_weight="1"
             android:backgroundTint="#A4FF87"
             android:src="@drawable/camera" />
@@ -133,7 +124,6 @@
             android:id="@+id/profileIcon"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_gravity="end"
             android:layout_marginEnd="16dp"
             android:layout_weight="1"
             android:src="@drawable/profilecandidate" />

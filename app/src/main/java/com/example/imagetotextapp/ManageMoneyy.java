@@ -79,6 +79,9 @@ public class ManageMoneyy extends AppCompatActivity {
 
     // Function to perform auto allocation based on percentages
     private void autoAllocate(double income) {
+        // logic
+        //https://chatgpt.com/share/674efdfd-21ec-800d-bff0-8bc4fea65cfe
+        
         // Clear previous categories from the container to avoid duplication
         categoryContainer.removeAllViews();
 
@@ -92,24 +95,24 @@ public class ManageMoneyy extends AppCompatActivity {
         double lainLain = income * percentages[3]; // 10% for Lain-lain
 
         // Fixed costs for Listrik and Listrik & Air
-        double listrik = Math.min(income / 50, 150000);  // Listrik becomes 1/50 of income, capped at 150k
+        double Internet = Math.min(income / 50, 150000);  // Listrik becomes 1/50 of income, capped at 150k
         double listrikAir = Math.min(income / 25, 250000);  // Listrik & Air becomes 1/25 of income, capped at 250k
 
         // Calculate remaining income after deducting fixed costs
-        double remainingKebutuhanPokok = kebutuhanPokok - listrik - listrikAir;
+        double remainingKebutuhanPokok = kebutuhanPokok - Internet - listrikAir;
 
         // If remaining income is less than 0, adjust Listrik and Listrik & Air
         if (remainingKebutuhanPokok < 0) {
             // If the remaining amount is negative, reduce Listrik & Listrik & Air first
             double totalDeficit = -remainingKebutuhanPokok;  // How much we're short
             double reducedListrikAir = Math.max(0, listrikAir - totalDeficit);
-            double reducedListrik = Math.max(0, listrik - (totalDeficit - (listrikAir - reducedListrikAir)));
+            double reducedInternet = Math.max(0, Internet - (totalDeficit - (listrikAir - reducedListrikAir)));
 
             // Recalculate remaining after adjustments
-            remainingKebutuhanPokok = kebutuhanPokok - reducedListrik - reducedListrikAir;
+            remainingKebutuhanPokok = kebutuhanPokok - reducedInternet - reducedListrikAir;
 
             // Update Listrik and Listrik & Air values
-            listrik = reducedListrik;
+            Internet = reducedInternet;
             listrikAir = reducedListrikAir;
         }
 
@@ -172,7 +175,7 @@ public class ManageMoneyy extends AppCompatActivity {
         addCategory("Tempat Tinggal", tempatTinggal);
         addCategory("Makan", makan);
         addCategory("Transportasi", transportasi);
-        addCategory("Internet", listrik);
+        addCategory("Internet", Internet);
         addCategory("Listrik & Air", listrikAir);
         addCategory("Keinginan", keinginan);
         addCategory("Tabungan", tabungan);
