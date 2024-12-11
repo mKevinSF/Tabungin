@@ -759,7 +759,7 @@ public class homepage extends AppCompatActivity {
 
             // Bangun request API
             Request request = new Request.Builder()
-                    .url("https://getpredict2-497063330583.asia-southeast2.run.app/predict") // Ganti dengan endpoint API Anda
+                    .url("https://getprediction2-1063878325210.asia-southeast2.run.app/predict") // Ganti dengan endpoint API Anda
                     .post(requestBody)
                     .build();
 

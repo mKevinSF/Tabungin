@@ -10,13 +10,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import android.content.Intent;
@@ -31,6 +35,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 //
 //public class prediksi extends AppCompatActivity {
 //
@@ -317,13 +323,16 @@ public class prediksi extends AppCompatActivity {
         setContentView(R.layout.activity_prediksi);
 
         LineChart originalDataChart = findViewById(R.id.original_data_chart);
-        LineChart testPredictionsChart = findViewById(R.id.test_predictions_chart);
-        LineChart futurePredictionsChart = findViewById(R.id.future_predictions_chart);
+//        LineChart testPredictionsChart = findViewById(R.id.test_predictions_chart);
+//        LineChart futurePredictionsChart = findViewById(R.id.future_predictions_chart);
         TableLayout unexpectedExpensesTable = findViewById(R.id.unexpected_expenses_table);
 
         enableChartScrollAndZoom(originalDataChart);
-        enableChartScrollAndZoom(testPredictionsChart);
-        enableChartScrollAndZoom(futurePredictionsChart);
+//        enableChartScrollAndZoom(testPredictionsChart);
+//        enableChartScrollAndZoom(futurePredictionsChart);
+
+        LineChart combinedChart = findViewById(R.id.combined_data_chart); // Use one chart for all data
+        enableChartScrollAndZoom(combinedChart);
 
         // Get the API result from the intent
         String apiResult = getIntent().getStringExtra("api_result");
@@ -332,6 +341,8 @@ public class prediksi extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(apiResult);
             JSONObject predictions = jsonObject.getJSONObject("predictions");
 
+            ArrayList<String> dates = new ArrayList<>();
+            ArrayList<String> dates_test = new ArrayList<>();
             // Plot Original Data
             if (predictions.has("original_data")) {
                 JSONArray originalDataArray = new JSONArray(predictions.getString("original_data"));
@@ -341,30 +352,163 @@ public class prediksi extends AppCompatActivity {
                     String date = dataPoint.getString("Date"); // Format: "dd/MM/yyyy"
                     float amount = (float) dataPoint.getDouble("Amount");
                     originalDataEntries.add(new Entry(i, amount));
+                    dates.add(date);
                 }
-                plotData(originalDataChart, originalDataEntries, "Original Data");
+                plotData(originalDataChart, originalDataEntries, "Original Data", android.R.color.holo_blue_dark);
+
+                // Format X-Axis to show dates
+                XAxis xAxis = originalDataChart.getXAxis();
+                xAxis.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getFormattedValue(float value) {
+                        // Return the corresponding date for the X value
+                        int index = (int) value;
+                        if (index >= 0 && index < dates.size()) {
+                            return dates.get(index); // Return the date at the specific index
+                        } else {
+                            return "";
+                        }
+                    }
+                });
             }
 
-            // Plot Test Predictions
+//            // Plot Test Predictions
+//            if (predictions.has("test_predictions")) {
+//                JSONArray testPredictionsArray = predictions.getJSONArray("test_predictions");
+//                ArrayList<Entry> testPredictionsEntries = new ArrayList<>();
+//                for (int i = 0; i < testPredictionsArray.length(); i++) {
+//                    float prediction = (float) testPredictionsArray.getDouble(i);
+//                    testPredictionsEntries.add(new Entry(i, prediction));
+//                }
+//                plotData(testPredictionsChart, testPredictionsEntries, "Test Predictions");
+//            }
+//
+//            // Plot Future Predictions
+//            if (predictions.has("future_predictions")) {
+//                JSONArray futurePredictionsArray = predictions.getJSONArray("future_predictions");
+//                ArrayList<Entry> futurePredictionsEntries = new ArrayList<>();
+//                for (int i = 0; i < futurePredictionsArray.length(); i++) {
+//                    float prediction = (float) futurePredictionsArray.getDouble(i);
+//                    futurePredictionsEntries.add(new Entry(i, prediction));
+//                }
+//                plotData(futurePredictionsChart, futurePredictionsEntries, "Future Predictions");
+//            }
+
+            // Plot Original Data
+//            ArrayList<Entry> originalDataEntries = new ArrayList<>();
+//            if (predictions.has("original_data")) {
+//                JSONArray originalDataArray = new JSONArray(predictions.getString("original_data"));
+//                for (int i = 0; i < originalDataArray.length(); i++) {
+//                    JSONObject dataPoint = originalDataArray.getJSONObject(i);
+//                    float amount = (float) dataPoint.getDouble("Amount");
+//                    originalDataEntries.add(new Entry(i, amount));
+//                }
+//                plotData(combinedChart, originalDataEntries, "Original Data", android.R.color.holo_blue_dark);
+//            }
+
+            // Create ArrayLists to hold the data for test predictions and future predictions
+            ArrayList<Entry> testPredictionsEntries = new ArrayList<>();
+            ArrayList<Entry> futurePredictionsEntries = new ArrayList<>();
+            ArrayList<Entry> dfRegularEntries = new ArrayList<>();
+
+            // Plot Test Predictions (align the test predictions with the last 30% of original data)
             if (predictions.has("test_predictions")) {
                 JSONArray testPredictionsArray = predictions.getJSONArray("test_predictions");
-                ArrayList<Entry> testPredictionsEntries = new ArrayList<>();
+
+                // Add test predictions at the end of original data (align with last 30% of original data)
                 for (int i = 0; i < testPredictionsArray.length(); i++) {
                     float prediction = (float) testPredictionsArray.getDouble(i);
-                    testPredictionsEntries.add(new Entry(i, prediction));
+                    testPredictionsEntries.add(new Entry(i, prediction)); // Add test predictions starting at the right position
                 }
-                plotData(testPredictionsChart, testPredictionsEntries, "Test Predictions");
+
+                plotData(combinedChart, testPredictionsEntries, "Test Predictions", android.R.color.holo_green_dark);
             }
 
-            // Plot Future Predictions
+            // Plot Future Predictions (start after the original data ends)
             if (predictions.has("future_predictions")) {
                 JSONArray futurePredictionsArray = predictions.getJSONArray("future_predictions");
-                ArrayList<Entry> futurePredictionsEntries = new ArrayList<>();
+
+                // Start future predictions right after the original data ends (without test data overlap)
+                int startIndex = testPredictionsEntries.size(); // After the last original data point
                 for (int i = 0; i < futurePredictionsArray.length(); i++) {
                     float prediction = (float) futurePredictionsArray.getDouble(i);
-                    futurePredictionsEntries.add(new Entry(i, prediction));
+                    futurePredictionsEntries.add(new Entry(startIndex + i, prediction)); // Start after original data
                 }
-                plotData(futurePredictionsChart, futurePredictionsEntries, "Future Predictions");
+
+                plotData(combinedChart, futurePredictionsEntries, "Future Predictions", android.R.color.holo_red_dark);
+            }
+
+            if (predictions.has("df_regular_with_date")) {
+                JSONArray dfRegularArray = new JSONArray(predictions.getString("df_regular_with_date"));
+
+                int testPredictionSize = testPredictionsEntries.size();
+
+                int startIndex = dfRegularArray.length() - testPredictionSize;
+
+                // Ambil data dari belakang ke depan berdasarkan startIndex
+                for (int i = startIndex; i < dfRegularArray.length(); i++) {
+                    JSONObject dataPoint = dfRegularArray.getJSONObject(i);
+                    float amount = (float) dataPoint.getDouble("Amount");
+                    dfRegularEntries.add(new Entry(i - startIndex, amount)); // Indeks dimulai dari 0 untuk entri baru
+                }
+
+                plotData(combinedChart, dfRegularEntries, "Regular Data", android.R.color.holo_blue_dark);
+            }
+
+            ArrayList<Entry> originalTestEntries = new ArrayList<>();
+            if (predictions.has("original_data_test")) {
+                JSONArray originalDataArray = new JSONArray(predictions.getString("original_data_test"));
+//                ArrayList<String> dates_test = new ArrayList<>();
+
+                // Extract dates from the original data
+                for (int i = 0; i < originalDataArray.length(); i++) {
+                    JSONObject dataPoint = originalDataArray.getJSONObject(i);
+                    String date = dataPoint.getString("Date"); // Format: "dd/MM/yyyy"
+                    dates_test.add(date);
+                }
+
+                ArrayList<String> selectedDates = new ArrayList<>();
+
+                int totalDates = dates_test.size();
+                int totalEntries = testPredictionsEntries.size();
+
+                if (totalEntries <= totalDates) {
+                    selectedDates.addAll(dates_test.subList(totalDates - totalEntries, totalDates));
+                }
+
+                // Tambahkan 7 tanggal baru berdasarkan tanggal terakhir
+                if (!dates_test.isEmpty()) {
+                    String lastDate = dates_test.get(totalDates - 1);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+
+                    try {
+                        Date lastDateParsed = dateFormat.parse(lastDate);
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(lastDateParsed);
+
+                        for (int i = 0; i < 7; i++) {
+                            calendar.add(Calendar.DAY_OF_YEAR, 1); // Tambahkan 1 hari ke tanggal
+                            String newDate = dateFormat.format(calendar.getTime());
+                            selectedDates.add(newDate);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                XAxis xAxis = combinedChart.getXAxis();
+                xAxis.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getFormattedValue(float value) {
+                        // Return the corresponding date for the X value
+                        int index = (int) value;
+                        if (index >= 0 && index < selectedDates.size()) {
+                            return selectedDates.get(index); // Return the date at the specific index
+                        } else {
+                            return "";
+                        }
+                    }
+                });
             }
 
             // Populate Unexpected Expenses Table
@@ -414,8 +558,9 @@ public class prediksi extends AppCompatActivity {
 
         // Set up zoom and scroll for the charts
         enableChartScrollAndZoom(originalDataChart);
-        enableChartScrollAndZoom(testPredictionsChart);
-        enableChartScrollAndZoom(futurePredictionsChart);
+//        enableChartScrollAndZoom(testPredictionsChart);
+//        enableChartScrollAndZoom(futurePredictionsChart);
+        enableChartScrollAndZoom(combinedChart);
 
         // Set up navigation buttons
         ImageView homeIcon = findViewById(R.id.homeIcon);
@@ -457,20 +602,40 @@ public class prediksi extends AppCompatActivity {
         chart.setPinchZoom(true);    // Enable pinch zoom
     }
 
-    private void plotData(LineChart chart, ArrayList<Entry> entries, String label) {
-        LineDataSet dataSet = new LineDataSet(entries, label);
-        dataSet.setLineWidth(2f);
-        dataSet.setColor(getResources().getColor(android.R.color.holo_blue_dark));
-        dataSet.setCircleColor(getResources().getColor(android.R.color.holo_blue_dark));
-        dataSet.setValueTextSize(10f);
+//    private void plotData(LineChart chart, ArrayList<Entry> entries, String label) {
+//        LineDataSet dataSet = new LineDataSet(entries, label);
+//        dataSet.setLineWidth(2f);
+//        dataSet.setColor(getResources().getColor(android.R.color.holo_blue_dark));
+//        dataSet.setCircleColor(getResources().getColor(android.R.color.holo_blue_dark));
+//        dataSet.setValueTextSize(10f);
+//
+//        LineData lineData = new LineData(dataSet);
+//        chart.setData(lineData);
+//
+//        Description description = new Description();
+//        description.setText(label);
+//        chart.setDescription(description);
+//        chart.invalidate(); // Refresh chart
+//    }
+private void plotData(LineChart chart, ArrayList<Entry> entries, String label, int colorResId) {
+    LineDataSet dataSet = new LineDataSet(entries, label);
+    dataSet.setLineWidth(2f);
+    dataSet.setColor(getResources().getColor(colorResId));
+    dataSet.setCircleColor(getResources().getColor(colorResId));
+    dataSet.setValueTextSize(10f);
 
-        LineData lineData = new LineData(dataSet);
+    LineData lineData = chart.getData();
+    if (lineData == null) {
+        lineData = new LineData();
         chart.setData(lineData);
-
-        Description description = new Description();
-        description.setText(label);
-        chart.setDescription(description);
-        chart.invalidate(); // Refresh chart
     }
+    lineData.addDataSet(dataSet);
+
+    Description description = new Description();
+    description.setText("Combined Data");
+    chart.setDescription(description);
+
+    chart.invalidate(); // Refresh chart
+}
 }
 

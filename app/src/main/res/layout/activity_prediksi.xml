@@ -191,6 +191,24 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Combined Data Chart with Title -->
+            <TextView
+                android:id="@+id/title_combined_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Combined Data"
+                android:textSize="18sp"
+                android:paddingBottom="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/combined_data_chart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="30dp"
+                android:background="#F0F0F0"/>
+
+
             <!-- Original Data Chart with Title -->
             <TextView
                 android:id="@+id/title_original_data"
@@ -209,38 +227,38 @@
                 android:background="#F0F0F0"/>
 
             <!-- Test Predictions Chart with Title -->
-            <TextView
-                android:id="@+id/title_test_predictions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Test Predictions"
-                android:textSize="18sp"
-                android:paddingBottom="8dp"
-                android:layout_marginBottom="8dp" />
+<!--            <TextView-->
+<!--                android:id="@+id/title_test_predictions"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Test Predictions"-->
+<!--                android:textSize="18sp"-->
+<!--                android:paddingBottom="8dp"-->
+<!--                android:layout_marginBottom="8dp" />-->
 
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/test_predictions_chart"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginBottom="30dp"
-                android:background="#F0F0F0" />
+<!--            <com.github.mikephil.charting.charts.LineChart-->
+<!--                android:id="@+id/test_predictions_chart"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="200dp"-->
+<!--                android:layout_marginBottom="30dp"-->
+<!--                android:background="#F0F0F0" />-->
 
-            <!-- Future Predictions Chart with Title -->
-            <TextView
-                android:id="@+id/title_future_predictions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Future Predictions"
-                android:textSize="18sp"
-                android:paddingBottom="8dp"
-                android:layout_marginBottom="8dp" />
+<!--            &lt;!&ndash; Future Predictions Chart with Title &ndash;&gt;-->
+<!--            <TextView-->
+<!--                android:id="@+id/title_future_predictions"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Future Predictions"-->
+<!--                android:textSize="18sp"-->
+<!--                android:paddingBottom="8dp"-->
+<!--                android:layout_marginBottom="8dp" />-->
 
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/future_predictions_chart"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginBottom="32dp"
-                android:background="#F0F0F0" />
+<!--            <com.github.mikephil.charting.charts.LineChart-->
+<!--                android:id="@+id/future_predictions_chart"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="200dp"-->
+<!--                android:layout_marginBottom="32dp"-->
+<!--                android:background="#F0F0F0" />-->
 
             <!-- Unexpected Expenses Table -->
             <TextView
