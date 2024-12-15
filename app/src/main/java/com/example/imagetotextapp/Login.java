@@ -47,19 +47,25 @@ public class Login extends AppCompatActivity {
                 String email = emailEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
+                boolean hasError = false;
+
                 if(TextUtils.isEmpty(email)) {
                     emailEditText.setError("Email is required");
-                    return;
+                    hasError = true;
                 }
 
                 if(TextUtils.isEmpty(password)) {
                     passwordEditText.setError("Password is required");
-                    return;
+                    hasError = true;
                 }
 
                 if(password.length() < 6) {
                     passwordEditText.setError("Password Must Be >= 6 Characters");
-                    return;
+                    hasError = true;
+                }
+
+                if (hasError) {
+                    return; // Stop execution if any error is found
                 }
 
                 mAuth.signInWithEmailAndPassword(email, password)
