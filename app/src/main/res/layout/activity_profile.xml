@@ -22,18 +22,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Profile Image -->
+
+    <!-- Username -->
     <ImageView
         android:id="@+id/profileImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="12dp"
         android:backgroundTint="#A4FF87"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/profile"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.479"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dateText" />
 
-    <!-- Username -->
     <TextView
         android:id="@+id/greetUserName"
         android:layout_width="wrap_content"
