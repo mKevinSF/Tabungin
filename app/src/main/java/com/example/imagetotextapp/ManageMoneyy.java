@@ -7,12 +7,8 @@ import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.text.DateFormat;
-import java.util.Calendar;
 
 public class ManageMoneyy extends AppCompatActivity {
 
@@ -152,23 +148,6 @@ public class ManageMoneyy extends AppCompatActivity {
             }
         }
 
-        // Append the calculated allocations to the result
-//        result.append("Kebutuhan Pokok (40%): ").append(String.format("%.2f", kebutuhanPokok)).append("\n");
-//        result.append("Tempat Tinggal: ").append(String.format("%.2f", tempatTinggal)).append("\n");
-//        result.append("Makan: ").append(String.format("%.2f", makan)).append("\n");
-//        result.append("Transportasi: ").append(String.format("%.2f", transportasi)).append("\n");
-//        result.append("Internet: ").append(String.format("%.2f", listrik)).append("\n");
-//        result.append("Listrik & Air: ").append(String.format("%.2f", listrikAir)).append("\n");
-//
-//        result.append("\n");
-//
-//        // Append the Keinginan, Tabungan, and Lain-lain
-//        result.append("Keinginan (30%): ").append(String.format("%.2f", keinginan)).append("\n");
-//        result.append("Tabungan (20%): ").append(String.format("%.2f", tabungan)).append("\n");
-//        result.append("Lain-lain (10%): ").append(String.format("%.2f", lainLain)).append("\n");
-
-        // Set the result in the resultTextView
-//        resultTextView.setText(result.toString());
         Toast.makeText(this, "Pemasukan dialokasikan sesuai 40-30-20-10", Toast.LENGTH_SHORT).show();
 
         // Add categories to the container
@@ -182,9 +161,9 @@ public class ManageMoneyy extends AppCompatActivity {
         addCategory("Lain-lain", lainLain);
     }
 
-
     // Function to add a category dynamically to the UI
     private void addCategory(String categoryName, double nominal) {
+
         LinearLayout categoryLayout = new LinearLayout(this);
         categoryLayout.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -208,4 +187,42 @@ public class ManageMoneyy extends AppCompatActivity {
         // Add category to the container
         categoryContainer.addView(categoryLayout);
     }
+
+    private void saveCategoriesToArray() {
+        int childCount = categoryContainer.getChildCount();
+        String[] categories = new String[childCount];
+        double[] values = new double[childCount];
+
+        for (int i = 0; i < childCount; i++) {
+            View childView = categoryContainer.getChildAt(i);
+            if (childView instanceof LinearLayout) {
+                LinearLayout categoryLayout = (LinearLayout) childView;
+
+                // Retrieve the category name
+                EditText categoryNameText = (EditText) categoryLayout.getChildAt(0);
+                String categoryName = categoryNameText.getText().toString();
+
+                // Retrieve the nominal value
+                EditText nominalField = (EditText) categoryLayout.getChildAt(1);
+                double nominalValue = Double.parseDouble(nominalField.getText().toString());
+
+                // Save to arrays
+                categories[i] = categoryName;
+                values[i] = nominalValue;
+            }
+        }
+
+        // Log the results for debugging
+        for (int i = 0; i < childCount; i++) {
+            String logMessage = "Category: " + categories[i] + ", Value: " + values[i];
+            android.util.Log.d("SaveCategories", logMessage);
+        }
+
+        Toast.makeText(this, "Categories and values saved to array", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onSaveCategoriesClicked(View view) {
+        saveCategoriesToArray();
+    }
+
 }
