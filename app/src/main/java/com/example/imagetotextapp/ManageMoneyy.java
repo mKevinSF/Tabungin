@@ -10,11 +10,24 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+
+import java.util.Collection;
+import java.util.HashMap;
+import  java.util.Map;
+
 public class ManageMoneyy extends AppCompatActivity {
 
     private EditText etIncome, resultTextView;
     private Button btnAutoAllocate, btnAddCategory;
     private LinearLayout categoryContainer;
+
+    private FirebaseFirestore db;
+    private FirebaseAuth auth;
 
     // Fixed category values
     private static final double ListrikAirLimit = 250000;
@@ -41,6 +54,9 @@ public class ManageMoneyy extends AppCompatActivity {
         ImageView profileIcon = findViewById(R.id.profileIcon);
         ImageView cameraIcon = findViewById(R.id.cameraIcon);
         ImageView homeIcon = findViewById(R.id.homeIcon);
+
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         homeIcon.setOnClickListener(v -> {
             Intent intent = new Intent(ManageMoneyy.this, homepage.class);
@@ -189,34 +205,66 @@ public class ManageMoneyy extends AppCompatActivity {
     }
 
     private void saveCategoriesToArray() {
-        int childCount = categoryContainer.getChildCount();
-        String[] categories = new String[childCount];
-        double[] values = new double[childCount];
+        String userId = auth.getCurrentUser().getUid();
+        CollectionReference userRef = db.collection("users");
+        userRef.document(userId).get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if(document.exists()) {
+                    String userName = document.getString("userName");
 
-        for (int i = 0; i < childCount; i++) {
-            View childView = categoryContainer.getChildAt(i);
-            if (childView instanceof LinearLayout) {
-                LinearLayout categoryLayout = (LinearLayout) childView;
+                    int childCount = categoryContainer.getChildCount();
+                    Map<String, Object> data = new HashMap<>();
 
-                // Retrieve the category name
-                EditText categoryNameText = (EditText) categoryLayout.getChildAt(0);
-                String categoryName = categoryNameText.getText().toString();
+                    for (int i = 0; i < childCount; i++) {
+                        View childView = categoryContainer.getChildAt(i);
+                        if (childView instanceof LinearLayout) {
+                            LinearLayout categoryLayout = (LinearLayout) childView;
 
-                // Retrieve the nominal value
-                EditText nominalField = (EditText) categoryLayout.getChildAt(1);
-                double nominalValue = Double.parseDouble(nominalField.getText().toString());
+                            // Retrieve the category name
+                            EditText categoryNameText = (EditText) categoryLayout.getChildAt(0);
+                            String categoryName = categoryNameText.getText().toString();
 
-                // Save to arrays
-                categories[i] = categoryName;
-                values[i] = nominalValue;
+                            // Retrieve the nominal value
+                            EditText nominalField = (EditText) categoryLayout.getChildAt(1);
+                            double nominalValue = Double.parseDouble(nominalField.getText().toString());
+
+                            // Save to arrays
+                            data.put(categoryName, nominalValue);
+                        }
+                    }
+
+                    data.put("userName", userName);
+
+                    db.collection("managemoney")
+                            .add(data)
+                            .addOnSuccessListener(documentReference -> {
+                                Toast.makeText(this, "Data saved to Firestore sucessfully", Toast.LENGTH_SHORT).show();
+                                android.util.Log.d("Firestore", "Document ID: " + documentReference.getId());
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(this, "Failed to save data to Firestore", Toast.LENGTH_SHORT).show();
+                                android.util.Log.e("Firestore", "Error saving document", e);
+                            });
+                }
             }
-        }
+        });
 
-        // Log the results for debugging
-        for (int i = 0; i < childCount; i++) {
-            String logMessage = "Category: " + categories[i] + ", Value: " + values[i];
-            android.util.Log.d("SaveCategories", logMessage);
-        }
+//        int childCount = categoryContainer.getChildCount();
+//        String[] categories = new String[childCount];
+//        double[] values = new double[childCount];
+//        Map<String, Object> data = new HashMap<>();
+
+
+
+
+
+
+//        // Log the results for debugging
+//        for (int i = 0; i < childCount; i++) {
+//            String logMessage = "Category: " + categories[i] + ", Value: " + values[i];
+//            android.util.Log.d("SaveCategories", logMessage);
+//        }
 
         Toast.makeText(this, "Categories and values saved to array", Toast.LENGTH_SHORT).show();
     }
