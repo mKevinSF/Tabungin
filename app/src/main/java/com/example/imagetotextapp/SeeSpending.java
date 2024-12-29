@@ -88,12 +88,14 @@ package com.example.imagetotextapp;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -129,6 +131,27 @@ public class SeeSpending extends AppCompatActivity {
         btnDownloadCSV = findViewById(R.id.btnDownloadCSV);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        ImageView profileIcon = findViewById(R.id.profileIcon);
+        ImageView cameraIcon = findViewById(R.id.cameraIcon);
+        ImageView homeIcon = findViewById(R.id.homeIcon);
+
+        homeIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(SeeSpending.this, homepage.class);
+            startActivity(intent);
+            finish();
+        });
+
+        profileIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(SeeSpending.this, profilepage.class);
+            startActivity(intent);
+            finish();
+        });
+
+        cameraIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(SeeSpending.this, input.class);
+            startActivity(intent);
+            finish();
+        });
 
         loadUserTransactions();
 
