@@ -81,6 +81,21 @@
 
 
     <!-- ProgressBar with Gray Overlay -->
+
+    <Button
+        android:id="@+id/SeeSpendingButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#2cb296"
+        android:text="See Spending"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/prediksiButton"
+        app:layout_constraintWidth_percent="0.7" />
+
     <View
         android:id="@+id/progressOverlay"
         android:layout_width="0dp"

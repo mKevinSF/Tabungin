@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">IMAGE TO TEXT APP</string>
     <string-array name="category_array">
-        <item>Makanan</item>
+        <item>Makan</item>
+        <item>Tempat Tinggal</item>
         <item>Transportasi</item>
-        <item>Belanja</item>
-        <item>Lainnya</item>
+        <item>Internet</item>
+        <item>Listrik &amp; Air</item>
+        <item>Tabungan</item>
+        <item>Keinginan</item>
+        <item>Lain-lain</item>
     </string-array>
 </resources>

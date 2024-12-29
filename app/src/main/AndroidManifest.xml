@@ -17,6 +17,9 @@
         android:theme="@style/Theme.IMAGETOTEXTAPP"
         tools:targetApi="31">
         <activity
+            android:name=".SeeSpending"
+            android:exported="false" />
+        <activity
             android:name=".ManageMoneyy"
             android:exported="false" />
         <activity

@@ -27,6 +27,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -58,9 +60,20 @@ public class input extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private Map<String, Double> categoryAllocation; // Menyimpan alokasi kategori
+//    private Map<String, Double> categoryAllocation = new HashMap<>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //29/12
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        fetchCategoryAllocation();
+//        for (Map.Entry<String, Double> entry : categoryAllocation.entrySet()) {
+//            Log.d("CATEGORY_ALLOCATION", "Category: " + entry.getKey() + ", Allocation: " + entry.getValue());
+//        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input);
 
@@ -81,8 +94,8 @@ public class input extends AppCompatActivity {
             }
         });
 
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+//        mAuth = FirebaseAuth.getInstance();
+//        db = FirebaseFirestore.getInstance();
 
         // Initialize your views here
         etItemName = findViewById(R.id.etItemName);
@@ -131,6 +144,19 @@ public class input extends AppCompatActivity {
 
                 // Parse price to double
                 double price = Double.parseDouble(priceText);
+
+                // Warning jika kategori tidak memiliki alokasi
+                if (!categoryAllocation.containsKey(category)) {
+//                    Toast.makeText(input.this, "Warning: Kategori ini belum memiliki alokasi anggaran!", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(v, "Anda belum melakukan alokasi anggaran", Snackbar.LENGTH_SHORT).show();
+                }
+
+                // Warning jika nilai transaksi > alokasi
+                Double allocatedBudget = categoryAllocation.get(category);
+                if (allocatedBudget != null && price > allocatedBudget) {
+//                    Toast.makeText(input.this, "Warning: Nilai transaksi melebihi alokasi kategori!", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(v, "Nilai transaksi melebihi alokasi kategori!", Snackbar.LENGTH_SHORT).show();
+                }
 
                 // Create a new Expense object
                 Expense newExpense = new Expense(itemName, price, category);
@@ -186,34 +212,8 @@ public class input extends AppCompatActivity {
                 finish();
             }
         });
-    }
 
-//    private void saveToCSV(Expense expense) {
-//        ContentValues values = new ContentValues();
-//        values.put(MediaStore.MediaColumns.DISPLAY_NAME, "pengeluaranmu.csv");
-//        values.put(MediaStore.MediaColumns.MIME_TYPE, "text/csv");
-//        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS); // Save to "Documents"
-//
-//        // Get the content resolver
-//        ContentResolver resolver = getContentResolver();
-//        Uri uri = resolver.insert(MediaStore.Files.getContentUri("external"), values);
-//
-//        if (uri != null) {
-//            try (OutputStream outputStream = resolver.openOutputStream(uri)) {
-//                if (outputStream != null) {
-//                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
-//                    writer.append("Item Name,Price,Category\n"); // CSV header
-//                    writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "\n");
-//                    writer.flush();
-//                    writer.close();
-//                    Toast.makeText(this, "Data disimpan !!", Toast.LENGTH_SHORT).show();
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
+    }
 
     private void saveToCSV(Expense expense) {
         ContentValues values = new ContentValues();
@@ -236,9 +236,11 @@ public class input extends AppCompatActivity {
             int idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID);
             long id = cursor.getLong(idColumn);
             uri = ContentUris.withAppendedId(contentUri, id);
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS);
         } else {
             // File doesn't exist, create a new one
             uri = resolver.insert(contentUri, values);
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS);
         }
 
         if (uri != null) {
@@ -252,6 +254,7 @@ public class input extends AppCompatActivity {
 
                     // Write header and data
                     if (cursor == null || cursor.getCount() == 0) {
+                        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS);
                         writer.append("Item Name,Amount,Category,Date\n"); // Write header if new file
                     }
                     writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "," + currentDate + "\n");
@@ -271,6 +274,65 @@ public class input extends AppCompatActivity {
             }
         }
     }
+
+    private void fetchCategoryAllocation() {
+    android.util.Log.d("HI", "HI");
+
+    String userId = mAuth.getCurrentUser().getUid();
+    // Ambil userName berdasarkan userId
+    db.collection("users").document(userId).get()
+            .addOnSuccessListener(userDocument -> {
+                if (userDocument.exists()) {
+                    // Dapatkan userName dari dokumen pengguna
+                    String userName = userDocument.getString("userName");
+                    android.util.Log.d("CATEGORY_ALLOCATION", "userName yang diambil: " + userName);
+
+                    // Setelah mendapatkan userName, gunakan untuk mengambil data kategori alokasi
+                    db.collection("managemoney").whereEqualTo("userName", userName)
+                            .get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                categoryAllocation = new HashMap<>();
+
+                                // Menambahkan log sebelum memproses data
+                                android.util.Log.d("CATEGORY_ALLOCATION", "Data yang diambil:");
+
+                                // Looping melalui dokumen yang diambil
+                                for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                                    android.util.Log.d("CATEGORY_ALLOCATION", "Document ID: " + document.getId());
+
+                                    // Looping melalui key di dalam dokumen
+                                    for (String key : document.getData().keySet()) {
+                                        if (!key.equals("userName")) { // Abaikan key 'userName'
+                                            Double value = document.getDouble(key);
+                                            categoryAllocation.put(key, value);
+
+                                            // Menambahkan log untuk setiap kategori dan alokasi yang diambil
+                                            android.util.Log.d("CATEGORY_ALLOCATION", "Kategori: " + key + ", Alokasi: " + value);
+                                        }
+                                    }
+                                }
+
+                                // Menampilkan toast setelah data berhasil diambil
+                                Toast.makeText(this, "Alokasi kategori berhasil diambil", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                // Log error jika gagal mengambil data dari managemoney
+                                android.util.Log.e("CATEGORY_ALLOCATION", "Gagal mengambil alokasi kategori", e);
+                                Toast.makeText(this, "Gagal mengambil alokasi kategori", Toast.LENGTH_SHORT).show();
+                            });
+                } else {
+                    // Jika user tidak ditemukan
+                    android.util.Log.e("CATEGORY_ALLOCATION", "User tidak ditemukan");
+                    Toast.makeText(this, "User tidak ditemukan", Toast.LENGTH_SHORT).show();
+                }
+            })
+            .addOnFailureListener(e -> {
+                // Log error jika gagal mengambil data user
+                android.util.Log.e("CATEGORY_ALLOCATION", "Gagal mengambil user data", e);
+                Toast.makeText(this, "Gagal mengambil data user", Toast.LENGTH_SHORT).show();
+            });
+}
+
 
 
 }

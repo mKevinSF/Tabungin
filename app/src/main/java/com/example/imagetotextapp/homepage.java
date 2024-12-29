@@ -52,7 +52,7 @@ public class homepage extends AppCompatActivity {
         ImageView homeIcon = findViewById(R.id.homeIcon);
         Button prediksibutton = findViewById(R.id.prediksiButton);
         Button manageButton = findViewById(R.id.manageButton);
-
+        Button SeeSpendingButton = findViewById(R.id.SeeSpendingButton);
 
         Calendar calendar = Calendar.getInstance();
         String currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
@@ -79,6 +79,12 @@ public class homepage extends AppCompatActivity {
 
         manageButton.setOnClickListener(v -> {
             Intent intent = new Intent(homepage.this, ManageMoneyy.class);
+            startActivity(intent);
+            finish();
+        });
+
+        SeeSpendingButton.setOnClickListener(v -> {
+            Intent intent = new Intent(homepage.this, SeeSpending.class);
             startActivity(intent);
             finish();
         });

@@ -250,22 +250,6 @@ public class ManageMoneyy extends AppCompatActivity {
             }
         });
 
-//        int childCount = categoryContainer.getChildCount();
-//        String[] categories = new String[childCount];
-//        double[] values = new double[childCount];
-//        Map<String, Object> data = new HashMap<>();
-
-
-
-
-
-
-//        // Log the results for debugging
-//        for (int i = 0; i < childCount; i++) {
-//            String logMessage = "Category: " + categories[i] + ", Value: " + values[i];
-//            android.util.Log.d("SaveCategories", logMessage);
-//        }
-
         Toast.makeText(this, "Categories and values saved to array", Toast.LENGTH_SHORT).show();
     }
 
