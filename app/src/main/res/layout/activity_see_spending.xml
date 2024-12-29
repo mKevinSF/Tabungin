@@ -43,9 +43,23 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Button for Downloading CSV -->
+    <Button
+        android:id="@+id/btnDownloadCSV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#2cb296"
+        android:padding="16dp"
+        android:text="Download CSV"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Scrollable Table Layout -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <TableLayout
             android:id="@+id/tableLayout"
@@ -54,28 +68,76 @@
             android:stretchColumns="*"
             android:padding="8dp">
 
+            <!-- Table Header Row -->
             <TableRow>
                 <TextView
                     android:text="Nama Item"
                     android:textStyle="bold"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:layout_weight="1"/>
 
                 <TextView
                     android:text="Harga"
                     android:textStyle="bold"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:layout_weight="1"/>
 
                 <TextView
                     android:text="Kategori"
                     android:textStyle="bold"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:layout_weight="1"/>
 
                 <TextView
                     android:text="Tanggal"
                     android:textStyle="bold"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:layout_weight="1"/>
             </TableRow>
+
+            <!-- Additional rows for table data can be dynamically added here -->
 
         </TableLayout>
     </ScrollView>
+
+    <!-- Bottom Navigation Layout -->
+    <LinearLayout
+        android:id="@+id/navigation_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center_vertical">
+
+        <!-- Left Icon -->
+        <ImageView
+            android:id="@+id/homeIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/homeagreement"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:layout_gravity="start"/>
+
+        <!-- Center Icon -->
+        <ImageView
+            android:id="@+id/cameraIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/camera"
+            android:backgroundTint="#A4FF87"
+            android:layout_weight="1"
+            android:layout_gravity="center"/>
+
+        <!-- Right Icon -->
+        <ImageView
+            android:id="@+id/profileIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/profilecandidate"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:layout_gravity="end"/>
+    </LinearLayout>
+
 </LinearLayout>

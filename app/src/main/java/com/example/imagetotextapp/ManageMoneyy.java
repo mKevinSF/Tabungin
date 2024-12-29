@@ -94,7 +94,7 @@ public class ManageMoneyy extends AppCompatActivity {
     private void autoAllocate(double income) {
         // logic
         //https://chatgpt.com/share/674efdfd-21ec-800d-bff0-8bc4fea65cfe
-        
+
         // Clear previous categories from the container to avoid duplication
         categoryContainer.removeAllViews();
 

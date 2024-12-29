@@ -281,7 +281,7 @@ public class input extends AppCompatActivity {
     private void fetchCategoryAllocation() {
         android.util.Log.d("HI", "HI");
 
-        String userId = mAuth.getCurrentUser ().getUid();
+        String userId = mAuth.getCurrentUser().getUid();
         // Ambil userName berdasarkan userId
         db.collection("users").document(userId).get()
                 .addOnSuccessListener(userDocument -> {
@@ -295,6 +295,8 @@ public class input extends AppCompatActivity {
                                 .get()
                                 .addOnSuccessListener(queryDocumentSnapshots -> {
                                     categoryAllocation = new HashMap<>();
+                                    Date latestDate = null; // Variabel untuk menyimpan tanggal terbaru
+                                    Map<String, Object> latestCategory = null; // Variabel untuk menyimpan kategori dengan tanggal terbaru
 
                                     // Menambahkan log sebelum memproses data
                                     android.util.Log.d("CATEGORY_ALLOCATION", "Data yang diambil:");
@@ -303,23 +305,39 @@ public class input extends AppCompatActivity {
                                     for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                                         android.util.Log.d("CATEGORY_ALLOCATION", "Document ID: " + document.getId());
 
-                                        // Looping melalui key di dalam dokumen
+                                        // Mendapatkan nilai 'date' yang bertipe Timestamp
+                                        Object dateObj = document.get("date");
+                                        if (dateObj instanceof com.google.firebase.Timestamp) {
+                                            com.google.firebase.Timestamp timestamp = (com.google.firebase.Timestamp) dateObj;
+                                            Date documentDate = timestamp.toDate(); // Mengubah Timestamp ke Date
+
+                                            // Cek apakah tanggal ini lebih baru dari tanggal yang sudah ada
+                                            if (latestDate == null || documentDate.after(latestDate)) {
+                                                latestDate = documentDate;
+                                                latestCategory = document.getData(); // Simpan kategori terkait dengan tanggal terbaru
+                                            }
+                                        }
+
+                                        // Looping melalui key di dalam dokumen, kecuali 'userName' dan 'date'
                                         for (String key : document.getData().keySet()) {
-                                            if (!key.equals("userName")) { // Abaikan key 'userName'
-                                                Object value = document.get(key); // Get the value as Object
-                                                if (value instanceof Number) { // Check if it's a Number
-                                                    categoryAllocation.put(key, ((Number) value).doubleValue()); // Cast to Double
-                                                    // Menambahkan log untuk setiap kategori dan alokasi yang diambil
+                                            if (!key.equals("userName") && !key.equals("date")) {
+                                                Object value = document.get(key);
+
+                                                if (value instanceof Number) {
+                                                    // Jika value adalah angka
+                                                    categoryAllocation.put(key, ((Number) value).doubleValue());
                                                     android.util.Log.d("CATEGORY_ALLOCATION", "Kategori: " + key + ", Alokasi: " + value);
-                                                } else {
-                                                    android.util.Log.e("CATEGORY_ALLOCATION", "Value for key " + key + " is not a Number: " + value);
                                                 }
                                             }
                                         }
                                     }
 
-                                    // Menampilkan toast setelah data berhasil diambil
-                                    Toast.makeText(this, "Alokasi kategori berhasil diambil", Toast.LENGTH_SHORT).show();
+                                    if (latestCategory != null) {
+                                        android.util.Log.d("CATEGORY_ALLOCATION", "Kategori dengan tanggal terbaru: " + latestCategory);
+                                        // Tampilkan Toast atau lakukan tindakan lain berdasarkan kategori terbaru
+                                        Toast.makeText(this, "Kategori dengan tanggal terbaru berhasil diambil", Toast.LENGTH_SHORT).show();
+                                    }
+
                                 })
                                 .addOnFailureListener(e -> {
                                     // Log error jika gagal mengambil data dari managemoney
@@ -328,8 +346,8 @@ public class input extends AppCompatActivity {
                                 });
                     } else {
                         // Jika user tidak ditemukan
-                        android.util.Log.e("CATEGORY_ALLOCATION", "User  tidak ditemukan");
-                        Toast.makeText(this, "User  tidak ditemukan", Toast.LENGTH_SHORT).show();
+                        android.util.Log.e("CATEGORY_ALLOCATION", "User tidak ditemukan");
+                        Toast.makeText(this, "User tidak ditemukan", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
