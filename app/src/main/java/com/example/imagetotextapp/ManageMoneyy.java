@@ -15,6 +15,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.Query;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -207,6 +208,7 @@ public class ManageMoneyy extends AppCompatActivity {
     private void saveCategoriesToArray() {
         String userId = auth.getCurrentUser().getUid();
         CollectionReference userRef = db.collection("users");
+
         userRef.document(userId).get().addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
@@ -235,22 +237,21 @@ public class ManageMoneyy extends AppCompatActivity {
                     }
 
                     data.put("userName", userName);
+                    data.put("date", com.google.firebase.firestore.FieldValue.serverTimestamp());
 
                     db.collection("managemoney")
                             .add(data)
                             .addOnSuccessListener(documentReference -> {
-                                Toast.makeText(this, "Data saved to Firestore sucessfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Data saved to Database Sucessfully", Toast.LENGTH_SHORT).show();
                                 android.util.Log.d("Firestore", "Document ID: " + documentReference.getId());
                             })
                             .addOnFailureListener(e -> {
-                                Toast.makeText(this, "Failed to save data to Firestore", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Failed to save data to Database", Toast.LENGTH_SHORT).show();
                                 android.util.Log.e("Firestore", "Error saving document", e);
                             });
                 }
             }
         });
-
-        Toast.makeText(this, "Categories and values saved to array", Toast.LENGTH_SHORT).show();
     }
 
     public void onSaveCategoriesClicked(View view) {

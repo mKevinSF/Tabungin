@@ -147,27 +147,30 @@ public class input extends AppCompatActivity {
 
                 // Warning jika kategori tidak memiliki alokasi
                 if (!categoryAllocation.containsKey(category)) {
-//                    Toast.makeText(input.this, "Warning: Kategori ini belum memiliki alokasi anggaran!", Toast.LENGTH_SHORT).show();
                     Snackbar.make(v, "Anda belum melakukan alokasi anggaran", Snackbar.LENGTH_SHORT).show();
                 }
 
                 // Warning jika nilai transaksi > alokasi
                 Double allocatedBudget = categoryAllocation.get(category);
                 if (allocatedBudget != null && price > allocatedBudget) {
-//                    Toast.makeText(input.this, "Warning: Nilai transaksi melebihi alokasi kategori!", Toast.LENGTH_SHORT).show();
                     Snackbar.make(v, "Nilai transaksi melebihi alokasi kategori!", Snackbar.LENGTH_SHORT).show();
                 }
 
                 // Create a new Expense object
                 Expense newExpense = new Expense(itemName, price, category);
 
+                // Get today's date in the required format
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                String currentDate = sdf.format(new Date());
+
                 // Save data to Firestore
-                String userId = mAuth.getCurrentUser().getUid();
+                String userId = mAuth.getCurrentUser ().getUid();
                 Map<String, Object> barangData = new HashMap<>();
                 barangData.put("itemName", itemName);
                 barangData.put("itemPrice", price);
                 barangData.put("itemCategory", category);
                 barangData.put("itemInputBy", userId);  // Use userId as itemInputBy
+                barangData.put("itemDate", currentDate); // Add the current date to Firestore
 
                 // Add new document to Firestore (this prevents overwriting data)
                 db.collection("Transactions").add(barangData)
@@ -276,63 +279,63 @@ public class input extends AppCompatActivity {
     }
 
     private void fetchCategoryAllocation() {
-    android.util.Log.d("HI", "HI");
+        android.util.Log.d("HI", "HI");
 
-    String userId = mAuth.getCurrentUser().getUid();
-    // Ambil userName berdasarkan userId
-    db.collection("users").document(userId).get()
-            .addOnSuccessListener(userDocument -> {
-                if (userDocument.exists()) {
-                    // Dapatkan userName dari dokumen pengguna
-                    String userName = userDocument.getString("userName");
-                    android.util.Log.d("CATEGORY_ALLOCATION", "userName yang diambil: " + userName);
+        String userId = mAuth.getCurrentUser ().getUid();
+        // Ambil userName berdasarkan userId
+        db.collection("users").document(userId).get()
+                .addOnSuccessListener(userDocument -> {
+                    if (userDocument.exists()) {
+                        // Dapatkan userName dari dokumen pengguna
+                        String userName = userDocument.getString("userName");
+                        android.util.Log.d("CATEGORY_ALLOCATION", "userName yang diambil: " + userName);
 
-                    // Setelah mendapatkan userName, gunakan untuk mengambil data kategori alokasi
-                    db.collection("managemoney").whereEqualTo("userName", userName)
-                            .get()
-                            .addOnSuccessListener(queryDocumentSnapshots -> {
-                                categoryAllocation = new HashMap<>();
+                        // Setelah mendapatkan userName, gunakan untuk mengambil data kategori alokasi
+                        db.collection("managemoney").whereEqualTo("userName", userName)
+                                .get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    categoryAllocation = new HashMap<>();
 
-                                // Menambahkan log sebelum memproses data
-                                android.util.Log.d("CATEGORY_ALLOCATION", "Data yang diambil:");
+                                    // Menambahkan log sebelum memproses data
+                                    android.util.Log.d("CATEGORY_ALLOCATION", "Data yang diambil:");
 
-                                // Looping melalui dokumen yang diambil
-                                for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-                                    android.util.Log.d("CATEGORY_ALLOCATION", "Document ID: " + document.getId());
+                                    // Looping melalui dokumen yang diambil
+                                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                                        android.util.Log.d("CATEGORY_ALLOCATION", "Document ID: " + document.getId());
 
-                                    // Looping melalui key di dalam dokumen
-                                    for (String key : document.getData().keySet()) {
-                                        if (!key.equals("userName")) { // Abaikan key 'userName'
-                                            Double value = document.getDouble(key);
-                                            categoryAllocation.put(key, value);
-
-                                            // Menambahkan log untuk setiap kategori dan alokasi yang diambil
-                                            android.util.Log.d("CATEGORY_ALLOCATION", "Kategori: " + key + ", Alokasi: " + value);
+                                        // Looping melalui key di dalam dokumen
+                                        for (String key : document.getData().keySet()) {
+                                            if (!key.equals("userName")) { // Abaikan key 'userName'
+                                                Object value = document.get(key); // Get the value as Object
+                                                if (value instanceof Number) { // Check if it's a Number
+                                                    categoryAllocation.put(key, ((Number) value).doubleValue()); // Cast to Double
+                                                    // Menambahkan log untuk setiap kategori dan alokasi yang diambil
+                                                    android.util.Log.d("CATEGORY_ALLOCATION", "Kategori: " + key + ", Alokasi: " + value);
+                                                } else {
+                                                    android.util.Log.e("CATEGORY_ALLOCATION", "Value for key " + key + " is not a Number: " + value);
+                                                }
+                                            }
                                         }
                                     }
-                                }
 
-                                // Menampilkan toast setelah data berhasil diambil
-                                Toast.makeText(this, "Alokasi kategori berhasil diambil", Toast.LENGTH_SHORT).show();
-                            })
-                            .addOnFailureListener(e -> {
-                                // Log error jika gagal mengambil data dari managemoney
-                                android.util.Log.e("CATEGORY_ALLOCATION", "Gagal mengambil alokasi kategori", e);
-                                Toast.makeText(this, "Gagal mengambil alokasi kategori", Toast.LENGTH_SHORT).show();
-                            });
-                } else {
-                    // Jika user tidak ditemukan
-                    android.util.Log.e("CATEGORY_ALLOCATION", "User tidak ditemukan");
-                    Toast.makeText(this, "User tidak ditemukan", Toast.LENGTH_SHORT).show();
-                }
-            })
-            .addOnFailureListener(e -> {
-                // Log error jika gagal mengambil data user
-                android.util.Log.e("CATEGORY_ALLOCATION", "Gagal mengambil user data", e);
-                Toast.makeText(this, "Gagal mengambil data user", Toast.LENGTH_SHORT).show();
-            });
-}
-
-
-
+                                    // Menampilkan toast setelah data berhasil diambil
+                                    Toast.makeText(this, "Alokasi kategori berhasil diambil", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    // Log error jika gagal mengambil data dari managemoney
+                                    android.util.Log.e("CATEGORY_ALLOCATION", "Gagal mengambil alokasi kategori", e);
+                                    Toast.makeText(this, "Gagal mengambil alokasi kategori", Toast.LENGTH_SHORT).show();
+                                });
+                    } else {
+                        // Jika user tidak ditemukan
+                        android.util.Log.e("CATEGORY_ALLOCATION", "User  tidak ditemukan");
+                        Toast.makeText(this, "User  tidak ditemukan", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Log error jika gagal mengambil data user
+                    android.util.Log.e("CATEGORY_ALLOCATION", "Gagal mengambil user data", e);
+                    Toast.makeText(this, "Gagal mengambil data user", Toast.LENGTH_SHORT).show();
+                });
+    }
 }
