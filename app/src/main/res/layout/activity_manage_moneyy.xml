@@ -98,6 +98,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <Button
+            android:id="@+id/btnFetchData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#2cb296"
+            android:text="Fetch Data"
+            android:textColor="#fff"
+            app:layout_constraintTop_toBottomOf="@id/btnSaveCategories"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <LinearLayout
             android:id="@+id/navigation_layout"
             android:layout_width="match_parent"

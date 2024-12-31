@@ -24,7 +24,7 @@ import  java.util.Map;
 public class ManageMoneyy extends AppCompatActivity {
 
     private EditText etIncome, resultTextView;
-    private Button btnAutoAllocate, btnAddCategory;
+    private Button btnAutoAllocate, btnAddCategory, btnFetchData;
     private LinearLayout categoryContainer;
 
     private FirebaseFirestore db;
@@ -48,9 +48,9 @@ public class ManageMoneyy extends AppCompatActivity {
         setContentView(R.layout.activity_manage_moneyy);
 
         etIncome = findViewById(R.id.etIncome);
-//        resultTextView = findViewById(R.id.resultTextView);
         btnAutoAllocate = findViewById(R.id.btnAutoAllocate);
         btnAddCategory = findViewById(R.id.btnAddCategory);
+        btnFetchData = findViewById(R.id.btnFetchData);
         categoryContainer = findViewById(R.id.categoryContainer);
         ImageView profileIcon = findViewById(R.id.profileIcon);
         ImageView cameraIcon = findViewById(R.id.cameraIcon);
@@ -88,6 +88,12 @@ public class ManageMoneyy extends AppCompatActivity {
         });
 
         btnAddCategory.setOnClickListener(v -> addCategory("Kategori Baru", 0));
+
+        btnFetchData.setOnClickListener(v -> {
+            Intent intent = new Intent(ManageMoneyy.this, fetchmanage.class);
+            startActivity(intent);
+        });
+
     }
 
     // Function to perform auto allocation based on percentages
@@ -236,7 +242,7 @@ public class ManageMoneyy extends AppCompatActivity {
                         }
                     }
 
-                    data.put("userName", userName);
+                    data.put("userName", userId);
                     data.put("date", com.google.firebase.firestore.FieldValue.serverTimestamp());
 
                     db.collection("managemoney")
