@@ -354,7 +354,7 @@ public class prediksi extends AppCompatActivity {
                     originalDataEntries.add(new Entry(i, amount));
                     dates.add(date);
                 }
-                plotData(originalDataChart, originalDataEntries, "Original Data", android.R.color.holo_blue_dark);
+                plotData(originalDataChart, originalDataEntries, "Data Asli", android.R.color.holo_blue_dark);
 
                 // Format X-Axis to show dates
                 XAxis xAxis = originalDataChart.getXAxis();
@@ -370,6 +370,19 @@ public class prediksi extends AppCompatActivity {
                         }
                     }
                 });
+                if (!dates.isEmpty()) {
+                    // Get the first and last dates from the list
+                    String firstDate = dates.get(0); // First date
+                    String lastDate = dates.get(dates.size() - 1); // Last date
+
+                    // Format the title text
+                    String titleText = "Data Asli dari (" + firstDate + " - " + lastDate + ")";
+
+                    // Update the TextView
+                    TextView titleTextView = findViewById(R.id.title_original_data);
+                    titleTextView.setText(titleText);
+                }
+
             }
 
 //            // Plot Test Predictions
@@ -421,7 +434,7 @@ public class prediksi extends AppCompatActivity {
                     testPredictionsEntries.add(new Entry(i, prediction)); // Add test predictions starting at the right position
                 }
 
-                plotData(combinedChart, testPredictionsEntries, "Test Predictions", android.R.color.holo_green_dark);
+                plotData(combinedChart, testPredictionsEntries, "Hasil Prediksi", android.R.color.holo_green_dark);
             }
 
             // Plot Future Predictions (start after the original data ends)
@@ -435,8 +448,9 @@ public class prediksi extends AppCompatActivity {
                     futurePredictionsEntries.add(new Entry(startIndex + i, prediction)); // Start after original data
                 }
 
-                plotData(combinedChart, futurePredictionsEntries, "Future Predictions", android.R.color.holo_red_dark);
+                plotData(combinedChart, futurePredictionsEntries, "Prediksi Pengeluaran 7 hari kedepan", android.R.color.holo_red_dark);
             }
+
 
             if (predictions.has("df_regular_with_date")) {
                 JSONArray dfRegularArray = new JSONArray(predictions.getString("df_regular_with_date"));
@@ -445,6 +459,7 @@ public class prediksi extends AppCompatActivity {
 
                 int startIndex = dfRegularArray.length() - testPredictionSize;
 
+
                 // Ambil data dari belakang ke depan berdasarkan startIndex
                 for (int i = startIndex; i < dfRegularArray.length(); i++) {
                     JSONObject dataPoint = dfRegularArray.getJSONObject(i);
@@ -452,7 +467,7 @@ public class prediksi extends AppCompatActivity {
                     dfRegularEntries.add(new Entry(i - startIndex, amount)); // Indeks dimulai dari 0 untuk entri baru
                 }
 
-                plotData(combinedChart, dfRegularEntries, "Regular Data", android.R.color.holo_blue_dark);
+                plotData(combinedChart, dfRegularEntries, "Data asli yang sudah diolah", android.R.color.holo_blue_dark);
             }
 
             ArrayList<Entry> originalTestEntries = new ArrayList<>();
@@ -509,6 +524,19 @@ public class prediksi extends AppCompatActivity {
                         }
                     }
                 });
+
+                if (!selectedDates.isEmpty()) {
+                    // Get the first and last dates from the list
+                    String firstDate = selectedDates.get(0); // First date
+                    String lastDate = selectedDates.get(selectedDates.size() - 1); // Last date
+
+                    // Format the title text
+                    String titleText = "Hasil Prediksi dari (" + firstDate + " - " + lastDate + ")";
+
+                    // Update the TextView
+                    TextView titleTextView = findViewById(R.id.title_combined_data);
+                    titleTextView.setText(titleText);
+                }
             }
 
             // Populate Unexpected Expenses Table

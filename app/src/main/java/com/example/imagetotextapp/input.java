@@ -61,7 +61,7 @@ public class input extends AppCompatActivity {
             try {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Informasi");
-                builder.setMessage("Seluruh transaksi anda akan kami simpan pada file bernama pengeluaranmu dengan format file csv " +
+                builder.setMessage("Seluruh transaksi anda akan kami simpan pada file dengan format file csv " +
                         "yang ada pada folder Documents.");
                 builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
                 AlertDialog dialog = builder.create();

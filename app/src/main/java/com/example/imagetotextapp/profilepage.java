@@ -185,6 +185,15 @@ public class profilepage extends AppCompatActivity {
             }
         });
 
+        logOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(profilepage.this, LoginRegister.class); // Ubah sesuai nama Activity Anda
+                startActivity(intent);
+                finish();
+            }
+        });
+
         DocumentReference documentReference = db.collection("users").document(userId);
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override

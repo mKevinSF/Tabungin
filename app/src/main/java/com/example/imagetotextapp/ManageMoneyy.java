@@ -114,8 +114,8 @@ public class ManageMoneyy extends AppCompatActivity {
         double lainLain = income * percentages[3]; // 10% for Lain-lain
 
         // Fixed costs for Listrik and Listrik & Air
-        double Internet = Math.min(income / 50, 150000);  // Listrik becomes 1/50 of income, capped at 150k
-        double listrikAir = Math.min(income / 25, 250000);  // Listrik & Air becomes 1/25 of income, capped at 250k
+        double Internet = Math.min(income / 50, 250000);  // Listrik becomes 1/50 of income, capped at 150k
+        double listrikAir = Math.min(income / 25, 450000);  // Listrik & Air becomes 1/25 of income, capped at 250k
 
         // Calculate remaining income after deducting fixed costs
         double remainingKebutuhanPokok = kebutuhanPokok - Internet - listrikAir;

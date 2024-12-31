@@ -103,3 +103,144 @@
     </LinearLayout>
 
 </LinearLayout>
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:orientation="vertical"-->
+<!--    android:padding="16dp">-->
+
+<!--    &lt;!&ndash; Button for Downloading CSV &ndash;&gt;-->
+<!--    <Button-->
+<!--        android:id="@+id/btnDownloadCSV"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:backgroundTint="#2cb296"-->
+<!--        android:padding="16dp"-->
+<!--        android:text="Download CSV"-->
+<!--        android:textColor="#FFFFFF"-->
+<!--        android:textSize="16sp"-->
+<!--        android:layout_marginBottom="16dp"/>-->
+
+<!--    &lt;!&ndash; Scrollable Table Layout &ndash;&gt;-->
+<!--    <ScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_weight="1">-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:paddingStart="16dp"-->
+<!--            android:paddingEnd="16dp">-->
+
+<!--            <TableLayout-->
+<!--                android:id="@+id/tableLayout"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:stretchColumns="*"-->
+<!--                android:padding="8dp">-->
+
+<!--                &lt;!&ndash; Table Header Row &ndash;&gt;-->
+<!--                <TableRow>-->
+<!--                    <TextView-->
+<!--                        android:text="Nama Item"-->
+<!--                        android:textStyle="bold"-->
+<!--                        android:padding="8dp"-->
+<!--                        android:gravity="center"-->
+<!--                        android:layout_weight="1"/>-->
+
+<!--                    <TextView-->
+<!--                        android:text="Harga"-->
+<!--                        android:textStyle="bold"-->
+<!--                        android:padding="8dp"-->
+<!--                        android:gravity="center"-->
+<!--                        android:layout_weight="1"/>-->
+
+<!--                    <TextView-->
+<!--                        android:text="Kategori"-->
+<!--                        android:textStyle="bold"-->
+<!--                        android:padding="8dp"-->
+<!--                        android:gravity="center"-->
+<!--                        android:layout_weight="1"/>-->
+
+<!--                    <TextView-->
+<!--                        android:text="Tanggal"-->
+<!--                        android:textStyle="bold"-->
+<!--                        android:padding="8dp"-->
+<!--                        android:gravity="center"-->
+<!--                        android:layout_weight="1"/>-->
+<!--                </TableRow>-->
+
+<!--                &lt;!&ndash; Example Data Row &ndash;&gt;-->
+<!--                <TableRow>-->
+<!--                    <TextView-->
+<!--                        android:text="Contoh Item"-->
+<!--                        android:padding="8dp"-->
+<!--                        android:gravity="center"-->
+<!--                        android:layout_weight="1"/>-->
+
+<!--                    <TextView-->
+<!--                        android:text="10000"-->
+<!--                        android:padding="8dp"-->
+<!--                        android:gravity="center"-->
+<!--                        android:layout_weight="1"/>-->
+
+<!--                    <TextView-->
+<!--                        android:text="Makan"-->
+<!--                        android:padding="8dp"-->
+<!--                        android:gravity="center"-->
+<!--                        android:layout_weight="1"/>-->
+
+<!--                    <TextView-->
+<!--                        android:text="12/12/2023"-->
+<!--                        android:padding="8dp"-->
+<!--                        android:gravity="center"-->
+<!--                        android:layout_weight="1"/>-->
+<!--                </TableRow>-->
+
+<!--            </TableLayout>-->
+<!--        </LinearLayout>-->
+<!--    </ScrollView>-->
+
+<!--    &lt;!&ndash; Bottom Navigation Layout &ndash;&gt;-->
+<!--    <LinearLayout-->
+<!--        android:id="@+id/navigation_layout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:padding="8dp"-->
+<!--        android:gravity="center_vertical">-->
+
+<!--        &lt;!&ndash; Left Icon &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/homeIcon"-->
+<!--            android:layout_width="32dp"-->
+<!--            android:layout_height="32dp"-->
+<!--            android:src="@drawable/homeagreement"-->
+<!--            android:layout_marginStart="16dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_gravity="start"/>-->
+
+<!--        &lt;!&ndash; Center Icon &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/cameraIcon"-->
+<!--            android:layout_width="32dp"-->
+<!--            android:layout_height="32dp"-->
+<!--            android:src="@drawable/camera"-->
+<!--            android:backgroundTint="#A4FF87"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_gravity="center"/>-->
+
+<!--        &lt;!&ndash; Right Icon &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/profileIcon"-->
+<!--            android:layout_width="32dp"-->
+<!--            android:layout_height="32dp"-->
+<!--            android:src="@drawable/profilecandidate"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_gravity="end"/>-->
+<!--    </LinearLayout>-->
+
+<!--</LinearLayout>-->
