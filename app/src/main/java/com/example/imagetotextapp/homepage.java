@@ -100,7 +100,7 @@ public class homepage extends AppCompatActivity {
             if (documentSnapshot != null && documentSnapshot.exists()) {
                 String userName = documentSnapshot.getString("userName");
                 TextView userNameTextView = findViewById(R.id.greetingText);
-                userNameTextView.setText("Welcome Back, " + userName);
+                userNameTextView.setText("Selamat Datang, " + userName);
             }
         });
     }

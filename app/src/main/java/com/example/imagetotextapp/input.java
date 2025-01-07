@@ -420,7 +420,7 @@ public class input extends AppCompatActivity {
 
                         // Siapkan data baru untuk dimasukkan
                         Map<String, Object> newData = new HashMap<>();
-                        newData.put("userName", userName + "_update");
+                        newData.put("userName", userName);
 
                         // Tambahkan alokasi kategori yang sudah dikurangi ke data baru
                         for (Map.Entry<String, Double> entry : categoryAllocation.entrySet()) {

@@ -190,8 +190,14 @@ public class SeeSpending extends AppCompatActivity {
         TableRow tableRow = new TableRow(this);
 
         TextView itemNameView = new TextView(this);
-        itemNameView.setText(itemName);
+        if (itemName != null && itemName.length() > 15) {
+            itemNameView.setText(itemName.substring(0, 15) + "…"); // Tambahkan ellipsis jika terlalu panjang
+        } else {
+            itemNameView.setText(itemName);
+        }
         itemNameView.setPadding(8, 8, 8, 8);
+//        itemNameView.setText(itemName);
+//        itemNameView.setPadding(8, 8, 8, 8);
 
         TextView itemPriceView = new TextView(this);
         itemPriceView.setText(String.valueOf(itemPrice));
