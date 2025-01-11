@@ -50,7 +50,7 @@ public class ManageMoneyy extends AppCompatActivity {
         etIncome = findViewById(R.id.etIncome);
         btnAutoAllocate = findViewById(R.id.btnAutoAllocate);
         btnAddCategory = findViewById(R.id.btnAddCategory);
-        btnFetchData = findViewById(R.id.btnFetchData);
+//        btnFetchData = findViewById(R.id.btnFetchData);
         categoryContainer = findViewById(R.id.categoryContainer);
         ImageView profileIcon = findViewById(R.id.profileIcon);
         ImageView cameraIcon = findViewById(R.id.cameraIcon);
@@ -89,17 +89,10 @@ public class ManageMoneyy extends AppCompatActivity {
 
         btnAddCategory.setOnClickListener(v -> addCategory("Kategori Baru", 0));
 
-        btnFetchData.setOnClickListener(v -> {
-            Intent intent = new Intent(ManageMoneyy.this, fetchmanage.class);
-            startActivity(intent);
-        });
-
     }
 
     // Function to perform auto allocation based on percentages
     private void autoAllocate(double income) {
-        // logic
-        //https://chatgpt.com/share/674efdfd-21ec-800d-bff0-8bc4fea65cfe
 
         // Clear previous categories from the container to avoid duplication
         categoryContainer.removeAllViews();
