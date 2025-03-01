@@ -1,89 +1,4 @@
 package com.example.imagetotextapp;
-//
-//import android.os.Bundle;
-//import android.view.View;
-//import android.widget.TableLayout;
-//import android.widget.TableRow;
-//import android.widget.TextView;
-//import android.widget.Toast;
-//
-//import androidx.annotation.NonNull;
-//import androidx.appcompat.app.AppCompatActivity;
-//
-//import com.google.firebase.auth.FirebaseAuth;
-//import com.google.firebase.firestore.DocumentSnapshot;
-//import com.google.firebase.firestore.FirebaseFirestore;
-//import com.google.firebase.firestore.QuerySnapshot;
-//
-//public class SeeSpending extends AppCompatActivity {
-//
-//    private TableLayout tableLayout;
-//    private FirebaseAuth mAuth;
-//    private FirebaseFirestore db;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_see_spending);
-//
-//        tableLayout = findViewById(R.id.tableLayout);
-//        mAuth = FirebaseAuth.getInstance();
-//        db = FirebaseFirestore.getInstance();
-//
-//        loadUserTransactions();
-//    }
-//
-//    private void loadUserTransactions() {
-//        String userId = mAuth.getCurrentUser().getUid();
-//
-//        db.collection("Transactions")
-//                .whereEqualTo("itemInputBy", userId)
-//                .get()
-//                .addOnCompleteListener(task -> {
-//                    if (task.isSuccessful()) {
-//                        QuerySnapshot querySnapshot = task.getResult();
-//
-//                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
-//                            for (DocumentSnapshot document : querySnapshot) {
-//                                String itemName = document.getString("itemName");
-//                                Double itemPrice = document.getDouble("itemPrice");
-//                                String itemCategory = document.getString("itemCategory");
-//
-//                                addTableRow(itemName, itemPrice, itemCategory);
-//                            }
-//                        } else {
-//                            Toast.makeText(SeeSpending.this, "Tidak ada data transaksi.", Toast.LENGTH_SHORT).show();
-//                        }
-//                    } else {
-//                        Toast.makeText(SeeSpending.this, "Gagal memuat data transaksi.", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//    }
-//
-//    private void addTableRow(String itemName, Double itemPrice, String itemCategory) {
-//        TableRow tableRow = new TableRow(this);
-//
-//        TextView itemNameView = new TextView(this);
-//        itemNameView.setText(itemName);
-//        itemNameView.setPadding(8, 8, 8, 8);
-//
-//        TextView itemPriceView = new TextView(this);
-//        itemPriceView.setText(String.valueOf(itemPrice));
-//        itemPriceView.setPadding(8, 8, 8, 8);
-//
-//        TextView itemCategoryView = new TextView(this);
-//        itemCategoryView.setText(itemCategory);
-//        itemCategoryView.setPadding(8, 8, 8, 8);
-//
-//        tableRow.addView(itemNameView);
-//        tableRow.addView(itemPriceView);
-//        tableRow.addView(itemCategoryView);
-//
-//        tableLayout.addView(tableRow);
-//    }
-//}
-//
-////ini dari csv
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -106,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.BufferedWriter;
@@ -113,7 +29,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class SeeSpending extends AppCompatActivity {
 
@@ -161,29 +80,68 @@ public class SeeSpending extends AppCompatActivity {
     private void loadUserTransactions() {
         String userId = mAuth.getCurrentUser().getUid();
 
+//        db.collection("Transactions")
+//                .whereEqualTo("itemInputBy", userId)
+//                .get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        QuerySnapshot querySnapshot = task.getResult();
+//
+//                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+//                            for (DocumentSnapshot document : querySnapshot) {
+//                                String itemName = document.getString("itemName");
+//                                Double itemPrice = document.getDouble("itemPrice");
+//                                String itemCategory = document.getString("itemCategory");
+//                                String itemDate = document.getString("itemDate");
+//
+//                                addTableRow(itemName, itemPrice, itemCategory, itemDate);
+//                            }
+//                        } else {
+//                            Toast.makeText(SeeSpending.this, "Tidak ada data transaksi.", Toast.LENGTH_SHORT).show();
+//                        }
+//                    } else {
+//                        Toast.makeText(SeeSpending.this, "Gagal memuat data transaksi.", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
         db.collection("Transactions")
                 .whereEqualTo("itemInputBy", userId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        QuerySnapshot querySnapshot = task.getResult();
+                        List<DocumentSnapshot> documents = new ArrayList<>(task.getResult().getDocuments());
 
-                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
-                            for (DocumentSnapshot document : querySnapshot) {
-                                String itemName = document.getString("itemName");
-                                Double itemPrice = document.getDouble("itemPrice");
-                                String itemCategory = document.getString("itemCategory");
-                                String itemDate = document.getString("itemDate");
+                        // Urutkan data secara manual
+                        Collections.sort(documents, (doc1, doc2) -> {
+                            String dateStr1 = doc1.getString("itemDate");
+                            String dateStr2 = doc2.getString("itemDate");
 
-                                addTableRow(itemName, itemPrice, itemCategory, itemDate);
+                            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                            try {
+                                Date date1 = sdf.parse(dateStr1);
+                                Date date2 = sdf.parse(dateStr2);
+                                return date1.compareTo(date2); // Urutkan ASCENDING
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                return 0;
                             }
-                        } else {
-                            Toast.makeText(SeeSpending.this, "Tidak ada data transaksi.", Toast.LENGTH_SHORT).show();
+                        });
+
+                        // Bersihkan tabel sebelum menambahkan data baru
+                        tableLayout.removeAllViews();
+
+                        for (DocumentSnapshot document : documents) {
+                            String itemName = document.getString("itemName");
+                            Double itemPrice = document.getDouble("itemPrice");
+                            String itemCategory = document.getString("itemCategory");
+                            String itemDate = document.getString("itemDate");
+
+                            addTableRow(itemName, itemPrice, itemCategory, itemDate);
                         }
                     } else {
                         Toast.makeText(SeeSpending.this, "Gagal memuat data transaksi.", Toast.LENGTH_SHORT).show();
                     }
                 });
+
     }
 
     private void addTableRow(String itemName, Double itemPrice, String itemCategory, String itemDate) {

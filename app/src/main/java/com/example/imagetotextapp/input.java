@@ -104,6 +104,70 @@ public class input extends AppCompatActivity {
         }
 
 //         Button click action to save data
+//        btnSave.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String itemName = etItemName.getText().toString().trim();
+//                String priceText = etPrice.getText().toString().trim();
+//                String category = spinnerCategory.getSelectedItem().toString();
+//
+//                // Input validation
+//                if (itemName.isEmpty() || priceText.isEmpty() || category.isEmpty()) {
+//                    Toast.makeText(input.this, "Nama Item, Harga, dan kategori wajib diisi", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                // Parse price to double
+//                double price = Double.parseDouble(priceText);
+//
+//                // Warning jika kategori tidak memiliki alokasi
+//                if (!categoryAllocation.containsKey(category)) {
+//                    Snackbar.make(v, "Anda belum melakukan alokasi anggaran", Snackbar.LENGTH_SHORT).show();
+//                }
+//
+//                // Warning jika nilai transaksi > alokasi
+//                Double allocatedBudget = categoryAllocation.get(category);
+//                if (allocatedBudget != null && price > allocatedBudget) {
+//                    Snackbar.make(v, "Nilai transaksi melebihi alokasi kategori!", Snackbar.LENGTH_SHORT).show();
+//                }
+//
+//                // Create a new Expense object
+//                Expense newExpense = new Expense(itemName, price, category);
+//
+//                // Get today's date in the required format
+//                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+//                String currentDate = sdf.format(new Date());
+//
+//                // Save data to Firestore
+//                String userId = mAuth.getCurrentUser ().getUid();
+//                Map<String, Object> barangData = new HashMap<>();
+//                barangData.put("itemName", itemName);
+//                barangData.put("itemPrice", price);
+//                barangData.put("itemCategory", category);
+//                barangData.put("itemInputBy", userId);  // Use userId as itemInputBy
+//                barangData.put("itemDate", currentDate); // Add the current date to Firestore
+//
+//                // Add new document to Firestore (this prevents overwriting data)
+//                db.collection("Transactions").add(barangData)
+//                        .addOnSuccessListener(documentReference -> {
+//                            // Success: Data is saved in Firestore
+//                            Toast.makeText(input.this, "Data berhasil disimpan ke Firestore", Toast.LENGTH_SHORT).show();
+//                        })
+//                        .addOnFailureListener(e -> {
+//                            // Failure: Something went wrong
+//                            Toast.makeText(input.this, "Gagal menyimpan data ke Firestore", Toast.LENGTH_SHORT).show();
+//                        });
+//
+//                // Optionally, save the same data to CSV
+////                saveToCSV(newExpense);
+//                reinsertCategoryAllocationToFirestore(category, price);
+//
+//                // Clear input fields after saving
+//                etItemName.setText("");
+//                etPrice.setText("");
+//                spinnerCategory.setSelection(0);
+//            }
+//        });
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,54 +184,47 @@ public class input extends AppCompatActivity {
                 // Parse price to double
                 double price = Double.parseDouble(priceText);
 
-                // Warning jika kategori tidak memiliki alokasi
-                if (!categoryAllocation.containsKey(category)) {
-                    Snackbar.make(v, "Anda belum melakukan alokasi anggaran", Snackbar.LENGTH_SHORT).show();
-                }
+                // Cek apakah alokasi dana tersedia
+                Double allocatedBudget = categoryAllocation != null ? categoryAllocation.get(category) : null;
 
-                // Warning jika nilai transaksi > alokasi
-                Double allocatedBudget = categoryAllocation.get(category);
-                if (allocatedBudget != null && price > allocatedBudget) {
+                if (allocatedBudget == null) {
+                    Snackbar.make(v, "Anda belum melakukan alokasi dana", Snackbar.LENGTH_SHORT).show();
+                } else if (price > allocatedBudget) {
                     Snackbar.make(v, "Nilai transaksi melebihi alokasi kategori!", Snackbar.LENGTH_SHORT).show();
                 }
 
-                // Create a new Expense object
-                Expense newExpense = new Expense(itemName, price, category);
-
-                // Get today's date in the required format
+                // Simpan data ke Firestore
+                String userId = mAuth.getCurrentUser().getUid();
                 SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                 String currentDate = sdf.format(new Date());
 
-                // Save data to Firestore
-                String userId = mAuth.getCurrentUser ().getUid();
                 Map<String, Object> barangData = new HashMap<>();
                 barangData.put("itemName", itemName);
                 barangData.put("itemPrice", price);
                 barangData.put("itemCategory", category);
-                barangData.put("itemInputBy", userId);  // Use userId as itemInputBy
-                barangData.put("itemDate", currentDate); // Add the current date to Firestore
+                barangData.put("itemInputBy", userId);
+                barangData.put("itemDate", currentDate);
 
-                // Add new document to Firestore (this prevents overwriting data)
                 db.collection("Transactions").add(barangData)
                         .addOnSuccessListener(documentReference -> {
-                            // Success: Data is saved in Firestore
-                            Toast.makeText(input.this, "Data berhasil disimpan ke Firestore", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(input.this, "Data berhasil disimpan", Toast.LENGTH_SHORT).show();
                         })
                         .addOnFailureListener(e -> {
-                            // Failure: Something went wrong
-                            Toast.makeText(input.this, "Gagal menyimpan data ke Firestore", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(input.this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
                         });
 
-                // Optionally, save the same data to CSV
-//                saveToCSV(newExpense);
-                reinsertCategoryAllocationToFirestore(category, price);
+                // Jika ada alokasi dana, kurangi alokasinya
+                if (allocatedBudget != null) {
+                    reinsertCategoryAllocationToFirestore(category, price);
+                }
 
-                // Clear input fields after saving
+                // Clear input fields setelah menyimpan
                 etItemName.setText("");
                 etPrice.setText("");
                 spinnerCategory.setSelection(0);
             }
         });
+
 
         // Navigation icons setup
         setupNavigation();
@@ -193,145 +250,6 @@ public class input extends AppCompatActivity {
         });
 
     }
-
-//    private void saveToCSV(Expense expense) {
-//        ContentValues values = new ContentValues();
-//        values.put(MediaStore.MediaColumns.DISPLAY_NAME, "pengeluaranmu.csv");
-//        values.put(MediaStore.MediaColumns.MIME_TYPE, "text/csv");
-//        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS); // Save to "Documents"
-//
-//        // Get the content resolver
-//        ContentResolver resolver = getContentResolver();
-//        Uri contentUri = MediaStore.Files.getContentUri("external");
-//
-//        // Check if file already exists
-//        String selection = MediaStore.MediaColumns.DISPLAY_NAME + " = ?";
-//        String[] selectionArgs = new String[] { "pengeluaranmu.csv" };
-//        Cursor cursor = resolver.query(contentUri, null, selection, selectionArgs, null);
-//
-//        Uri uri = null;
-//        if (cursor != null && cursor.moveToFirst()) {
-//            // File exists, get the Uri
-//            int idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID);
-//            long id = cursor.getLong(idColumn);
-//            uri = ContentUris.withAppendedId(contentUri, id);
-//            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS);
-//        } else {
-//            // File doesn't exist, create a new one
-//            uri = resolver.insert(contentUri, values);
-//            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS);
-//        }
-//
-//        if (uri != null) {
-//            try (OutputStream outputStream = resolver.openOutputStream(uri, "wa")) { // "wa" = append mode
-//                if (outputStream != null) {
-//                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
-//
-//                    // Get today's date in the required format
-//                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-//                    String currentDate = sdf.format(new Date());
-//
-//                    // Write header and data
-//                    if (cursor == null || cursor.getCount() == 0) {
-//                        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS);
-//                        writer.append("Item Name,Amount,Category,Date\n"); // Write header if new file
-//                    }
-//                    writer.append(expense.getItemName() + "," + expense.getPrice() + "," + expense.getCategory() + "," + currentDate + "\n");
-//
-//                    writer.flush();
-//                    writer.close();
-//
-//                    Toast.makeText(this, "Data disimpan !!", Toast.LENGTH_SHORT).show();
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                Toast.makeText(this, "Gagal menyimpan data", Toast.LENGTH_SHORT).show();
-//            } finally {
-//                if (cursor != null) {
-//                    cursor.close();
-//                }
-//            }
-//        }
-//    }
-
-//    private void fetchCategoryAllocation() {
-//        android.util.Log.d("HI", "HI");
-//
-//        String userId = mAuth.getCurrentUser().getUid();
-//        // Ambil userName berdasarkan userId
-//        db.collection("users").document(userId).get()
-//                .addOnSuccessListener(userDocument -> {
-//                    if (userDocument.exists()) {
-//                        // Dapatkan userName dari dokumen pengguna
-//                        String userName = userDocument.getString("userName");
-//                        android.util.Log.d("CATEGORY_ALLOCATION", "userName yang diambil: " + userName);
-//
-//                        // Setelah mendapatkan userName, gunakan untuk mengambil data kategori alokasi
-//                        db.collection("managemoney").whereEqualTo("userName", userName)
-//                                .get()
-//                                .addOnSuccessListener(queryDocumentSnapshots -> {
-//                                    categoryAllocation = new HashMap<>();
-//                                    Date latestDate = null; // Variabel untuk menyimpan tanggal terbaru
-//                                    Map<String, Object> latestCategory = null; // Variabel untuk menyimpan kategori dengan tanggal terbaru
-//
-//                                    // Menambahkan log sebelum memproses data
-//                                    android.util.Log.d("CATEGORY_ALLOCATION", "Data yang diambil:");
-//
-//                                    // Looping melalui dokumen yang diambil
-//                                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-//                                        android.util.Log.d("CATEGORY_ALLOCATION", "Document ID: " + document.getId());
-//
-//                                        // Mendapatkan nilai 'date' yang bertipe Timestamp
-//                                        Object dateObj = document.get("date");
-//                                        if (dateObj instanceof com.google.firebase.Timestamp) {
-//                                            com.google.firebase.Timestamp timestamp = (com.google.firebase.Timestamp) dateObj;
-//                                            Date documentDate = timestamp.toDate(); // Mengubah Timestamp ke Date
-//
-//                                            // Cek apakah tanggal ini lebih baru dari tanggal yang sudah ada
-//                                            if (latestDate == null || documentDate.after(latestDate)) {
-//                                                latestDate = documentDate;
-//                                                latestCategory = document.getData(); // Simpan kategori terkait dengan tanggal terbaru
-//                                            }
-//                                        }
-//
-//                                        // Looping melalui key di dalam dokumen, kecuali 'userName' dan 'date'
-//                                        for (String key : document.getData().keySet()) {
-//                                            if (!key.equals("userName") && !key.equals("date")) {
-//                                                Object value = document.get(key);
-//
-//                                                if (value instanceof Number) {
-//                                                    // Jika value adalah angka
-//                                                    categoryAllocation.put(key, ((Number) value).doubleValue());
-//                                                    android.util.Log.d("CATEGORY_ALLOCATION", "Kategori: " + key + ", Alokasi: " + value);
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-//
-//                                    if (latestCategory != null) {
-//                                        android.util.Log.d("CATEGORY_ALLOCATION", "Kategori dengan tanggal terbaru: " + latestCategory);
-//                                        // Tampilkan Toast atau lakukan tindakan lain berdasarkan kategori terbaru
-//                                        Toast.makeText(this, "Kategori dengan tanggal terbaru berhasil diambil", Toast.LENGTH_SHORT).show();
-//                                    }
-//
-//                                })
-//                                .addOnFailureListener(e -> {
-//                                    // Log error jika gagal mengambil data dari managemoney
-//                                    android.util.Log.e("CATEGORY_ALLOCATION", "Gagal mengambil alokasi kategori", e);
-//                                    Toast.makeText(this, "Gagal mengambil alokasi kategori", Toast.LENGTH_SHORT).show();
-//                                });
-//                    } else {
-//                        // Jika user tidak ditemukan
-//                        android.util.Log.e("CATEGORY_ALLOCATION", "User tidak ditemukan");
-//                        Toast.makeText(this, "User tidak ditemukan", Toast.LENGTH_SHORT).show();
-//                    }
-//                })
-//                .addOnFailureListener(e -> {
-//                    // Log error jika gagal mengambil data user
-//                    android.util.Log.e("CATEGORY_ALLOCATION", "Gagal mengambil user data", e);
-//                    Toast.makeText(this, "Gagal mengambil data user", Toast.LENGTH_SHORT).show();
-//                });
-//    }
 
     private void fetchCategoryAllocation() {
         String userId = mAuth.getCurrentUser().getUid();
@@ -366,10 +284,10 @@ public class input extends AppCompatActivity {
 
                                         // Log dan feedback pengguna
                                         android.util.Log.d("CATEGORY_ALLOCATION", "Data terbaru berhasil diambil: " + latestDocument.getData());
-                                        Toast.makeText(this, "Data terbaru berhasil diambil.", Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(this, "Data terbaru berhasil diambil.", Toast.LENGTH_SHORT).show();
                                     } else {
                                         android.util.Log.d("CATEGORY_ALLOCATION", "Tidak ada data ditemukan.");
-                                        Toast.makeText(this, "Tidak ada data ditemukan.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, "Kamu belum melakukan alokasi dana", Toast.LENGTH_SHORT).show();
                                     }
                                 })
                                 .addOnFailureListener(e -> {
@@ -392,13 +310,13 @@ public class input extends AppCompatActivity {
         // Cek apakah categoryAllocation ada datanya
         if (categoryAllocation == null || categoryAllocation.isEmpty()) {
             Toast.makeText(this, "Tidak ada data untuk dimasukkan kembali.", Toast.LENGTH_SHORT).show();
-            return;
+//            return;
         }
 
         // Cek apakah kategori yang dimaksud ada dalam alokasi
         if (!categoryAllocation.containsKey(category)) {
             Toast.makeText(this, "Kategori tidak ditemukan dalam alokasi.", Toast.LENGTH_SHORT).show();
-            return;
+//            return;
         }
 
         // Kurangi alokasi kategori dengan harga
@@ -433,11 +351,11 @@ public class input extends AppCompatActivity {
                         // Simpan data baru ke Firestore
                         db.collection("managemoney").add(newData)
                                 .addOnSuccessListener(documentReference -> {
-                                    Toast.makeText(this, "Data berhasil dimasukkan kembali dengan pengurangan alokasi.", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(this, "Data berhasil dimasukkan kembali dengan pengurangan alokasi.", Toast.LENGTH_SHORT).show();
                                 })
                                 .addOnFailureListener(e -> {
                                     Toast.makeText(this, "Gagal memasukkan data baru.", Toast.LENGTH_SHORT).show();
-                                    Log.e("FIREBASE_INSERT", "Error: " + e.getMessage(), e);
+//                                    Log.e("FIREBASE_INSERT", "Error: " + e.getMessage(), e);
                                 });
                     } else {
                         Toast.makeText(this, "User tidak ditemukan.", Toast.LENGTH_SHORT).show();

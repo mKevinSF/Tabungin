@@ -235,7 +235,7 @@ public class ManageMoneyy extends AppCompatActivity {
                         }
                     }
 
-                    data.put("userName", userId);
+                    data.put("userName", userName);
                     data.put("date", com.google.firebase.firestore.FieldValue.serverTimestamp());
 
                     db.collection("managemoney")
